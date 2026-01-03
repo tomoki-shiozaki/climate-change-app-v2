@@ -21,7 +21,10 @@
     "paths": {
       "@/*": ["./*"]
     },
-    "types": ["vitest", "vitest/globals"]
+    "types": [
+      "vitest", // Vitest のユーティリティ（vi, Mock, MockedFunction など）の型を補完するため
+      "vitest/globals" // Vitest のグローバル関数（describe, it, expect など）を import なしで使うため
+    ]
   },
   "include": [
     "next-env.d.ts",
