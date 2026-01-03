@@ -1,0 +1,59 @@
+steps:
+  - name: "gcr.io/cloud-builders/gcloud"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        # ビルドコンテナ内だけに env.yaml を作成
+        cat <<EOF > backend/env.yaml
+        SECRET_KEY: "${_SECRET_KEY}"
+        DATABASE_URL: "${_DATABASE_URL}"
+        ALLOWED_HOSTS: "${_ALLOWED_HOSTS}"
+        CSRF_TRUSTED_ORIGINS: "${_CSRF_TRUSTED_ORIGINS}"
+        CORS_ORIGIN_WHITELIST: "${_CORS_ORIGIN_WHITELIST}"
+        EOF
+  # ステップ 1: Dockerイメージのビルド
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "asia-northeast1-docker.pkg.dev/$PROJECT_ID/climate-change-app/climate-change-app-image",
+        "-f",
+        "backend/docker/Dockerfile.prod",
+        "backend",
+      ]
+
+  # ステップ 2: Docker イメージを Artifact Registry にプッシュ
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "push",
+        "asia-northeast1-docker.pkg.dev/$PROJECT_ID/climate-change-app/climate-change-app-image",
+      ]
+
+  # ステップ 3: Cloud Runにデプロイ
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    args:
+      [
+        "gcloud",
+        "run",
+        "deploy",
+        "climate-change-app",
+        "--image",
+        "asia-northeast1-docker.pkg.dev/$PROJECT_ID/climate-change-app/climate-change-app-image",
+        "--platform",
+        "managed",
+        "--region",
+        "asia-northeast1",
+        "--allow-unauthenticated",
+        "--env-vars-file",
+        "backend/env.yaml",
+      ]
+
+# オプション: ロギング設定
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+# タイムアウト設定（600秒 = 10分）
+timeout: 600s

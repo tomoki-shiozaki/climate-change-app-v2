@@ -1,0 +1,11 @@
+django
+djangorestframework
+dj-rest-auth
+django-allauth
+environs[django]
+whitenoise
+psycopg[binary]
+gunicorn
+django-cors-headers
+requests
+djangorestframework-simplejwt
