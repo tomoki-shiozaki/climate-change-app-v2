@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
+import { ErrorProvider } from "@/context/error";
+import { ClientProviders } from "@/app/providers/ClientProviders";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -40,7 +43,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        {/* 全ページ共通の状態管理を提供 */}
+        <ErrorProvider>
+          <ClientProviders>{children}</ClientProviders>
+        </ErrorProvider>
       </body>
     </html>
   );
