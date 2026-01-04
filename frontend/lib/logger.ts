@@ -1,20 +1,20 @@
-const isDevOrStaging =
-  import.meta.env.MODE === "development" || import.meta.env.MODE === "staging";
+const isDev = process.env.NODE_ENV === "development";
+const isStaging = process.env.NEXT_PUBLIC_STAGE === "staging";
 
 const logWarn = (...args: unknown[]) => {
-  if (isDevOrStaging) {
+  if (isDev || isStaging) {
     console.warn(...args);
   }
 };
 
 const logInfo = (...args: unknown[]) => {
-  if (isDevOrStaging) {
+  if (isDev || isStaging) {
     console.info(...args);
   }
 };
 
 const logError = (...args: unknown[]) => {
-  if (isDevOrStaging) {
+  if (isDev || isStaging) {
     console.error(...args);
   }
 };
