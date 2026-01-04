@@ -1,5 +1,8 @@
+"use client";
+
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useAuthContext } from "@/features/auth/context/useAuthContext";
 import {
   DropdownMenu,
@@ -12,7 +15,6 @@ import { Button } from "@/components/ui/button";
 /* ======================
    ナビ定義
 ====================== */
-
 const mainLinks = [
   { to: "/", label: "ホーム" },
   { to: "/climate/temperature", label: "気温グラフ" },
@@ -27,7 +29,6 @@ const dropdownLinks = [
 /* ======================
    共通 NavbarLink
 ====================== */
-
 type NavbarLinkProps = {
   to: string;
   active?: boolean;
@@ -37,7 +38,7 @@ type NavbarLinkProps = {
 function NavbarLink({ to, active, children }: NavbarLinkProps) {
   return (
     <Link
-      to={to}
+      href={to}
       className={`px-2 py-1 rounded-md transition-colors ${
         active
           ? "text-white font-semibold bg-white/20"
@@ -52,7 +53,6 @@ function NavbarLink({ to, active, children }: NavbarLinkProps) {
 /* ======================
    認証エリア
 ====================== */
-
 type AuthNavProps = {
   currentUsername: string | null;
   logout: () => void;
@@ -86,9 +86,8 @@ const AuthNav: React.FC<AuthNavProps> = ({ currentUsername, logout }) => {
 /* ======================
    Navbar 本体
 ====================== */
-
 export const AppNavbar = () => {
-  const location = useLocation();
+  const pathname = usePathname();
   const { currentUsername, logout } = useAuthContext();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -104,7 +103,7 @@ export const AppNavbar = () => {
       >
         {/* 上段：ロゴ + ハンバーガー */}
         <div className="flex items-center justify-between w-full md:w-auto md:mr-6">
-          <Link to="/" className="text-lg font-bold whitespace-nowrap">
+          <Link href="/" className="text-lg font-bold whitespace-nowrap">
             気候変動データアプリ
           </Link>
 
@@ -115,7 +114,6 @@ export const AppNavbar = () => {
             <span className="sr-only">メニュー切替</span>☰
           </button>
         </div>
-
         {/* 下段：ナビ + 認証 */}
         <div
           className={`w-full md:flex md:items-center md:gap-4 mt-2 md:mt-0 ${
@@ -128,7 +126,7 @@ export const AppNavbar = () => {
               <NavbarLink
                 key={link.to}
                 to={link.to}
-                active={location.pathname === link.to}
+                active={pathname === link.to}
               >
                 {link.label}
               </NavbarLink>
@@ -162,12 +160,11 @@ export const AppNavbar = () => {
                 "
               >
                 {dropdownLinks.map((link) => {
-                  const isActive = location.pathname === link.to;
-
+                  const isActive = pathname === link.to;
                   return (
                     <DropdownMenuItem asChild key={link.to}>
                       <Link
-                        to={link.to}
+                        href={link.to}
                         className={`block w-full px-2 py-1 rounded ${
                           isActive ? "bg-blue-100 font-medium" : ""
                         }`}
