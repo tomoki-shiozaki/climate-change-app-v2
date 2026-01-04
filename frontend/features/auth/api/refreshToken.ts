@@ -5,7 +5,8 @@ type RefreshResponse =
   paths["/api/v1/dj-rest-auth/token/refresh/"]["post"]["responses"]["200"]["content"]["application/json"];
 
 // API の base URL
-const baseURL = import.meta.env.VITE_API_URL || "http://localhost:8000/api/v1";
+const baseURL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
 
 /**
  * Refresh token による access token 更新
