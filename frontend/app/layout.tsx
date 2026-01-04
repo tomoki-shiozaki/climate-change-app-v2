@@ -4,6 +4,7 @@ import "./globals.css";
 
 import { ErrorProvider } from "@/context/error";
 import { ClientProviders } from "@/app/providers/ClientProviders";
+import { AppContent } from "@/app/components/AppContent";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,7 +46,9 @@ export default function RootLayout({
       >
         {/* 全ページ共通の状態管理を提供 */}
         <ErrorProvider>
-          <ClientProviders>{children}</ClientProviders>
+          <ClientProviders>
+            <AppContent>{children}</AppContent>
+          </ClientProviders>
         </ErrorProvider>
       </body>
     </html>
