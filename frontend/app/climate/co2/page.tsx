@@ -1,10 +1,20 @@
+import dynamic from "next/dynamic";
+
 import { PageLayout } from "@/components/layout/PageLayout";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
-  CO2WorldMap,
   CO2MapExplanation,
   CO2DataSource,
 } from "@/features/climate/components";
+
+// 👇 ここが最大の変更点
+const CO2WorldMap = dynamic(
+  () =>
+    import("@/features/climate/components/CO2WorldMap").then(
+      (mod) => mod.CO2WorldMap
+    ),
+  { ssr: false }
+);
 
 const CO2MapPage = () => {
   return (
@@ -24,8 +34,7 @@ const CO2MapPage = () => {
         </CardFooter>
       </Card>
 
-      {/* 説明カード*/}
-
+      {/* 説明カード */}
       <Card>
         <CardContent>
           <CO2MapExplanation />
