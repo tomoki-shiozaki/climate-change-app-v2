@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useCallback } from "react";
 import type { ReactNode } from "react";
 import { ErrorContext } from "./ErrorContext";
