@@ -27,7 +27,6 @@ export const metadata: Metadata = {
       type: "image/svg+xml",
     },
   ],
-  themeColor: "#00aaff",
 };
 
 export default function RootLayout({
@@ -38,13 +37,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* viewport は metadata ではカバーできないので手動で追加 */}
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="theme-color" content="#00aaff" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* 全ページ共通の状態管理を提供 */}
         <ErrorProvider>
           <ClientProviders>
             <AppContent>{children}</AppContent>
