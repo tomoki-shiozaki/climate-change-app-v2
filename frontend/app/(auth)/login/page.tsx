@@ -1,4 +1,7 @@
-import { useNavigate, Navigate } from "react-router-dom";
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
@@ -19,7 +22,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { CenteredBox } from "@/components/layout";
 
 const LoginPage = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { login, currentUsername } = useAuthContext();
 
   const {
@@ -31,14 +34,16 @@ const LoginPage = () => {
     resolver: zodResolver(loginSchema),
   });
   // すでにログイン済みならトップページへリダイレクト
-  if (currentUsername) {
-    return <Navigate to="/" replace />;
-  }
+  useEffect(() => {
+    if (currentUsername) {
+      router.replace("/");
+    }
+  }, [currentUsername, router]);
 
   const onSubmit = async (data: LoginFormValues) => {
     try {
       await login(data);
-      navigate("/"); // ログイン成功でホームへ
+      router.replace("/"); // ログイン成功でホームへ
     } catch (err: unknown) {
       logError(err);
 
