@@ -1,4 +1,7 @@
-import { useNavigate, Navigate } from "react-router-dom";
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
@@ -19,7 +22,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { CenteredBox } from "@/components/layout";
 
 const SignupPage = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { signup, currentUsername } = useAuthContext();
 
   const {
@@ -32,14 +35,16 @@ const SignupPage = () => {
   });
 
   // すでにログイン済みならトップページへリダイレクト
-  if (currentUsername) {
-    return <Navigate to="/" replace />;
-  }
+  useEffect(() => {
+    if (currentUsername) {
+      router.replace("/");
+    }
+  }, [currentUsername, router]);
 
   const onSubmit = async (data: SignupFormValues) => {
     try {
       await signup(data);
-      navigate("/"); // 登録成功後にホームへ
+      router.replace("/"); // 登録成功後にホームへ
     } catch (err: unknown) {
       logError(err);
 
