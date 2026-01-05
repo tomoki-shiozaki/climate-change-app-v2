@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useAuthContext } from "@/features/auth/context";
 import { useErrorContext } from "@/context/error";
 import { apiClient } from "@/features/auth/api/apiClient";
+import { AppLayout } from "@/app/components/AppLayout";
 import { FullScreenLoading } from "@/components/common";
 import { logInfo, logWarn } from "@/lib/logger";
 
@@ -28,5 +29,5 @@ export function AppContent({ children }: { children: React.ReactNode }) {
 
   if (authLoading) return <FullScreenLoading message="読み込み中..." />;
 
-  return <>{children}</>; // Next.js のページコンポーネントがここに入る
+  return <AppLayout>{children}</AppLayout>; // Next.js のページコンポーネントがここに入る
 }
