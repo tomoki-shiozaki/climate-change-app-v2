@@ -41,8 +41,11 @@ export const TemperatureChart = () => {
 
   // データ取得後、初期地域をセット
   useEffect(() => {
-    if (!selectedRegion && data) {
-      setSelectedRegion(getInitialRegion(data));
+    if (data && !selectedRegion) {
+      const id = setTimeout(() => {
+        setSelectedRegion(getInitialRegion(data));
+      });
+      return () => clearTimeout(id);
     }
   }, [data, selectedRegion]);
 
