@@ -55,11 +55,16 @@
 ### 4. import の統一
 
 - プロジェクト内では **基本的に絶対インポート** を使用します。
-- ただし、`index.ts` 内の export は同階層のファイルをまとめる用途なので、**相対インポートで統一して問題ありません**。
-- 例：
-  ```ts
-  // context/index.ts
-  export { AuthProvider } from "./AuthProvider";
-  export { AuthContext } from "./AuthContext";
-  export { useAuthContext } from "./useAuthContext";
-  ```
+- ただし、以下の場合は **相対インポートを許容／推奨** します。
+
+#### 相対インポートを使用するケース
+
+1. `index.ts` 内で、同階層のファイルをまとめて export する場合
+2. **Next.js App Router の `page.tsx` や `layout.tsx` から、同階層の「ページ専用コンポーネント」を読み込む場合**
+
+例：
+
+```ts
+// app/(private)/climate/co2/page.tsx
+import { CO2MapClient } from "./CO2MapClient";
+```
