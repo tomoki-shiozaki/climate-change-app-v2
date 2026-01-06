@@ -1,8 +1,7 @@
-import React from "react";
 import { HomeLayout } from "@/components/layout/HomeLayout";
 import { CardLink } from "@/components/common/CardLink";
 
-const HomePage: React.FC = () => {
+export default function HomePage() {
   return (
     <HomeLayout
       title="気候変動データアプリ"
@@ -11,7 +10,7 @@ const HomePage: React.FC = () => {
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* 気温データ */}
-        <CardLink to="/climate/temperature">
+        <CardLink href="/climate/temperature">
           <h2 className="text-xl font-semibold text-blue-600 mb-2">
             気温グラフ
           </h2>
@@ -21,7 +20,7 @@ const HomePage: React.FC = () => {
         </CardLink>
 
         {/* CO₂排出量 */}
-        <CardLink to="/climate/co2">
+        <CardLink href="/climate/co2">
           <h2 className="text-xl font-semibold text-blue-600 mb-2">
             CO₂排出量マップ
           </h2>
@@ -32,6 +31,4 @@ const HomePage: React.FC = () => {
       </div>
     </HomeLayout>
   );
-};
-
-export default HomePage;
+}

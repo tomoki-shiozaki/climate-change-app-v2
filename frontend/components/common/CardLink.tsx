@@ -1,14 +1,14 @@
-import { Link } from "react-router-dom";
+import Link from "next/link";
 
 type CardLinkProps = {
-  to: string;
+  href: string;
   children: React.ReactNode;
 };
 
-export const CardLink = ({ to, children }: CardLinkProps) => {
+export const CardLink = ({ href, children }: CardLinkProps) => {
   return (
     <Link
-      to={to}
+      href={href}
       className="
         block p-6 rounded-2xl bg-white shadow-md
         transition cursor-pointer
