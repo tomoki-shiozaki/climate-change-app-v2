@@ -48,7 +48,7 @@ jobs:
         run: cd frontend && npm run generate:api
 
       - name: Verify API client is up-to-date
-        run: git diff --exit-code frontend/src/types/api.d.ts || (echo "❌ API client is not up-to-date. Run 'make generate-api' and commit the result." && exit 1)
+        run: git diff --exit-code frontend/types/api.d.ts || (echo "❌ API client is not up-to-date. Run 'make generate-api' and commit the result." && exit 1)
 
   test-and-coverage:
     runs-on: ubuntu-latest
