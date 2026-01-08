@@ -1,5 +1,3 @@
-"use client";
-
 import { AppNavbar, Footer, ErrorToast } from "@/components/common";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {

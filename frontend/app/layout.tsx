@@ -20,13 +20,7 @@ export const metadata: Metadata = {
   title: "Climate Change App",
   description:
     "Climate Change App - Track and learn about climate change impacts",
-  icons: [
-    {
-      rel: "icon",
-      url: "/climate-logo.svg",
-      type: "image/svg+xml",
-    },
-  ],
+  icons: "/climate-logo.svg",
 };
 
 export default function RootLayout({
@@ -37,7 +31,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="theme-color" content="#00aaff" />
       </head>
       <body
