@@ -22,14 +22,9 @@ Django REST Framework（API）と React（UI）を使った、気候変動デー
 ## デプロイ URL
 
 1. **推奨環境**  
-   https://climate-change-app-2.onrender.com/  
-   フロントは Render、バックエンドは Cloud Run にデプロイ済み。
-   ※Cloud Run はコールドスタート時に起動時間がかかる場合があります（目安：最大約 20〜25 秒）。
-
-2. **代替環境（Render 上で動作）**  
-   https://climate-change-app.onrender.com  
-   Cloud Run 版が使えない場合に利用。
-   ※Render（無料プラン）はスリープ復帰に時間がかかる場合があります（目安：最大約 50〜60 秒）。
+   https://climate-change-app-v2.onrender.com/  
+   フロント、バックエンド両方を Render にデプロイ済み。
+   ※フロント、バック両方で起動時間がかかります。（目安：フロントは最大 40 秒、バックエンドは最大約 50~60 秒）。
 
 ## デモ用アカウント（ポートフォリオ閲覧用）
 
