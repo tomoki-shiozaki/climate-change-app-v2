@@ -1,15 +1,15 @@
-# 気候変動データアプリ
+# 気候変動データアプリ v2
 
 [![Build Status](https://github.com/tomoki-shiozaki/climate-change-app-v2/actions/workflows/ci.yml/badge.svg)](https://github.com/tomoki-shiozaki/climate-change-app-v2/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/tomoki-shiozaki/climate-change-app-v2/graph/badge.svg?token=PERZWD42XB)](https://codecov.io/gh/tomoki-shiozaki/climate-change-app-v2)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Django REST Framework（API）と React（UI）を使った、気候変動データの可視化アプリです。
+Django REST Framework と Next.js を使った、気候変動データの可視化アプリです。[気候変動データアプリ](https://github.com/tomoki-shiozaki/climate-change-app)のフロントエンドを Next.js に移行したバージョンです。
 
 ## 使用技術
 
-- Django REST Framework, React, PostgreSQL
-- Cloud Run / Render（デプロイ環境）
+- Django REST Framework, Next.js（App Router）, PostgreSQL
+- Vercel / Render（デプロイ環境）
 - GitHub Actions（定期バッチ処理）
 
 ## 機能
@@ -22,7 +22,13 @@ Django REST Framework（API）と React（UI）を使った、気候変動デー
 ## デプロイ URL
 
 1. **推奨環境**  
+   https://climate-change-app-v2.vercel.app/  
+   フロントエンドは Vercel、バックエンドは Render にデプロイ済み。
+   ※バックエンドはスリープ復帰に時間がかかる場合があります（目安：最大約 50〜60 秒）。
+
+2. **代替環境（Render 上で動作）**  
    https://climate-change-app-v2.onrender.com/  
+   Vercel 環境が利用できない場合の代替として用意しています。
    フロント、バックエンド両方を Render にデプロイ済み。
    ※フロント、バック両方で起動時間がかかります。（目安：フロントは最大 40 秒、バックエンドは最大約 50~60 秒）。
 
