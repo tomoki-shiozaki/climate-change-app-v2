@@ -17,7 +17,7 @@ Django REST Framework と Next.js を使った、気候変動データの可視�
 - 気温データの時系列グラフ表示
 - 国別 CO₂ 排出量の色分けマップ表示（年度スライダー対応）
 - JWT による認証・ログイン/ログアウト
-- OWID 気候データの定期バッチ取得
+- [Our World in Data（OWID）](https://ourworldindata.org/) の気候データを用いた定期バッチ取得
 
 ## デプロイ URL
 
