@@ -1,10 +1,10 @@
 resource "google_cloudbuild_trigger" "app_trigger" {
-  name     = "climate-build-trigger"
+  name     = "climate-change-app-v2-deploy"
   filename = "cloudbuild.yaml"
 
   github {
-    owner = "YOUR_GITHUB_ORG"
-    name  = "YOUR_REPO"
+    owner = "tomoki-shiozaki"
+    name  = "climate-change-app-v2"
     push {
       branch = "^main$"
     }
