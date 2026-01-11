@@ -39,7 +39,7 @@ steps:
         "gcloud",
         "run",
         "deploy",
-        "climate-change-app",
+        "climate-change-app-v2",
         "--image",
         "asia-northeast1-docker.pkg.dev/$PROJECT_ID/climate-change-app-v2/climate-change-app-image",
         "--platform",
