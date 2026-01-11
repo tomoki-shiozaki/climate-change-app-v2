@@ -1,0 +1,27 @@
+name: Deploy to Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Apply
+        env:
+          TF_VAR_secret_key: ${{ secrets.SECRET_KEY }}
+          TF_VAR_database_url: ${{ secrets.DATABASE_URL }}
+          TF_VAR_allowed_hosts: ${{ secrets.ALLOWED_HOSTS }}
+          TF_VAR_csrf_trusted_origins: ${{ secrets.CSRF_TRUSTED_ORIGINS }}
+          TF_VAR_cors_origin_whitelist: ${{ secrets.CORS_ORIGIN_WHITELIST }}
+        run: terraform apply -auto-approve
