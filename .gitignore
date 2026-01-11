@@ -1,2 +1,19 @@
+# =========================
+# Local memo / notes
+# =========================
 memo/
+
+# =========================
+# Environment variables
+# =========================
 .env
+.env.*
+
+
+# =========================
+# Terraform
+# =========================
+**/.terraform/
+**/terraform.tfstate
+**/terraform.tfstate.*
+**/*.tfvars
