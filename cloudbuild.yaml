@@ -46,7 +46,6 @@ steps:
         "managed",
         "--region",
         "asia-northeast1",
-        "--allow-unauthenticated",
         "--env-vars-file",
         "backend/env.yaml",
       ]
