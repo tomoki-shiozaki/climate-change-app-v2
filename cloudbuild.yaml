@@ -18,7 +18,7 @@ steps:
       [
         "build",
         "-t",
-        "asia-northeast1-docker.pkg.dev/$PROJECT_ID/climate-change-app/climate-change-app-image",
+        "asia-northeast1-docker.pkg.dev/$PROJECT_ID/climate-change-app-v2/climate-change-app-image",
         "-f",
         "backend/docker/Dockerfile.prod",
         "backend",
@@ -29,7 +29,7 @@ steps:
     args:
       [
         "push",
-        "asia-northeast1-docker.pkg.dev/$PROJECT_ID/climate-change-app/climate-change-app-image",
+        "asia-northeast1-docker.pkg.dev/$PROJECT_ID/climate-change-app-v2/climate-change-app-image",
       ]
 
   # ステップ 3: Cloud Runにデプロイ
@@ -41,7 +41,7 @@ steps:
         "deploy",
         "climate-change-app",
         "--image",
-        "asia-northeast1-docker.pkg.dev/$PROJECT_ID/climate-change-app/climate-change-app-image",
+        "asia-northeast1-docker.pkg.dev/$PROJECT_ID/climate-change-app-v2/climate-change-app-image",
         "--platform",
         "managed",
         "--region",
