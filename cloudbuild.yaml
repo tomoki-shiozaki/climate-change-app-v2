@@ -1,17 +1,4 @@
 steps:
-  - name: "gcr.io/cloud-builders/gcloud"
-    entrypoint: "bash"
-    args:
-      - "-c"
-      - |
-        # ビルドコンテナ内だけに env.yaml を作成
-        cat <<EOF > backend/env.yaml
-        SECRET_KEY: "${_SECRET_KEY}"
-        DATABASE_URL: "${_DATABASE_URL}"
-        ALLOWED_HOSTS: "${_ALLOWED_HOSTS}"
-        CSRF_TRUSTED_ORIGINS: "${_CSRF_TRUSTED_ORIGINS}"
-        CORS_ORIGIN_WHITELIST: "${_CORS_ORIGIN_WHITELIST}"
-        EOF
   # ステップ 1: Dockerイメージのビルド
   - name: "gcr.io/cloud-builders/docker"
     args:
@@ -46,8 +33,6 @@ steps:
         "managed",
         "--region",
         "asia-northeast1",
-        "--env-vars-file",
-        "backend/env.yaml",
       ]
 
 # オプション: ロギング設定
