@@ -5,3 +5,9 @@ variable "region" {
 variable "service_name" {
   default = "climate-change-app-v2"
 }
+variable "github_owner" {
+  default = "tomoki-shiozaki"
+}
+variable "github_repo" {
+  default = "climate-change-app-v2"
+}
