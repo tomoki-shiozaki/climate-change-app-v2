@@ -9,4 +9,6 @@ resource "google_cloudbuild_trigger" "app_trigger" {
       branch = "^main$"
     }
   }
+
+  service_account = google_service_account.cloudbuild_runner.email
 }

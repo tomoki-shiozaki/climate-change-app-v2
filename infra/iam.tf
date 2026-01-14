@@ -1,26 +1,35 @@
-# プロジェクト情報を取得
-data "google_project" "current" {}
-
-# Cloud Buildサービスアカウントのメールアドレスを locals で組み立て
-locals {
-  cloudbuild_sa = "${data.google_project.current.number}@cloudbuild.gserviceaccount.com"
+############################################
+# Cloud Build 用 runner サービスアカウント
+############################################
+resource "google_service_account" "cloudbuild_runner" {
+  account_id   = "cloud-build-runner-tf"
+  display_name = "Cloud Build Runner Service Account"
 }
 
-# Artifact Registry push権限を付与
-resource "google_project_iam_member" "cloudbuild_artifact_registry" {
+############################################
+# Cloud Build を実行する権限
+############################################
+resource "google_project_iam_member" "runner_cloudbuild" {
+  project = var.project_id
+  role    = "roles/cloudbuild.builds.builder"
+  member  = "serviceAccount:${google_service_account.cloudbuild_runner.email}"
+}
+
+############################################
+# Artifact Registry へ push する権限
+############################################
+resource "google_project_iam_member" "runner_artifact_registry" {
   project = var.project_id
   role    = "roles/artifactregistry.writer"
-  member  = "serviceAccount:${local.cloudbuild_sa}"
+  member  = "serviceAccount:${google_service_account.cloudbuild_runner.email}"
 }
 
-resource "google_project_iam_member" "cloudbuild_cloudrun" {
+############################################
+# Cloud Run をデプロイ・管理する権限
+############################################
+resource "google_project_iam_member" "runner_cloudrun" {
   project = var.project_id
   role    = "roles/run.admin"
-  member  = "serviceAccount:${local.cloudbuild_sa}"
+  member  = "serviceAccount:${google_service_account.cloudbuild_runner.email}"
 }
 
-resource "google_project_iam_member" "cloudbuild_sa_user" {
-  project = var.project_id
-  role    = "roles/iam.serviceAccountUser"
-  member  = "serviceAccount:${local.cloudbuild_sa}"
-}
