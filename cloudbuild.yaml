@@ -1,3 +1,6 @@
+# このビルドを実行する Service Account を明示
+serviceAccount: cloud-build-runner-tf@${PROJECT_ID}.iam.gserviceaccount.com
+
 steps:
   # ステップ 1: Dockerイメージのビルド
   - name: "gcr.io/cloud-builders/docker"
