@@ -33,3 +33,14 @@ resource "google_project_iam_member" "runner_cloudrun" {
   member  = "serviceAccount:${google_service_account.cloudbuild_runner.email}"
 }
 
+resource "google_project_iam_member" "runner_sa_user" {
+  project = var.project_id
+  role    = "roles/iam.serviceAccountUser"
+  member  = "serviceAccount:${google_service_account.cloudbuild_runner.email}"
+}
+
+resource "google_project_iam_member" "runner_log_writer" {
+  project = var.project_id
+  role    = "roles/logging.logWriter"
+  member  = "serviceAccount:${google_service_account.cloudbuild_runner.email}"
+}
