@@ -11,4 +11,3 @@ variable "github_owner" {
 variable "github_repo" {
   default = "climate-change-app-v2"
 }
-variable "github_app_installation_id" {}
