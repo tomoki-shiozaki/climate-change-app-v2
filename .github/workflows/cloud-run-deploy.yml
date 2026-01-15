@@ -1,13 +1,14 @@
-name: Deploy to Cloud Run
+name: Terraform Plan
 
 on:
-  push:
+  pull_request:
     branches:
       - main
 
 jobs:
-  deploy:
+  plan:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v5
 
@@ -17,11 +18,8 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      - name: Terraform Apply
+      - name: Terraform Plan
         env:
-          TF_VAR_secret_key: ${{ secrets.SECRET_KEY }}
-          TF_VAR_database_url: ${{ secrets.DATABASE_URL }}
-          TF_VAR_allowed_hosts: ${{ secrets.ALLOWED_HOSTS }}
-          TF_VAR_csrf_trusted_origins: ${{ secrets.CSRF_TRUSTED_ORIGINS }}
-          TF_VAR_cors_origin_whitelist: ${{ secrets.CORS_ORIGIN_WHITELIST }}
-        run: terraform apply -auto-approve
+          TF_VAR_project_id: ${{ secrets.PROJECT_ID }}
+          TF_VAR_region: asia-northeast1
+        run: terraform plan
