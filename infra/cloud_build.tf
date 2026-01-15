@@ -1,6 +1,6 @@
 resource "google_cloudbuild_trigger" "app_trigger" {
   name     = "${var.service_name}-deploy"
-  location = "global"
+  location = var.region
 
   repository_event_config {
     repository = google_cloudbuildv2_repository.repo.id
