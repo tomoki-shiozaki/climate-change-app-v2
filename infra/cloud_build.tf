@@ -12,4 +12,8 @@ resource "google_cloudbuild_trigger" "app_trigger" {
 
   filename        = "cloudbuild.yaml"
   service_account = google_service_account.cloudbuild_runner.email
+
+  depends_on = [
+    google_cloudbuildv2_repository.repo
+  ]
 }
