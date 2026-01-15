@@ -2,7 +2,7 @@
 # 既存の Cloud Build GitHub Connection を参照
 ############################################
 data "google_cloudbuildv2_connection" "github" {
-  name     = "github-connection-climate-v2"
+  name     = "github-connection"
   location = "asia-northeast1"
 }
 
