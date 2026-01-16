@@ -1,24 +1,14 @@
+# このビルドを実行する Service Account を明示
+serviceAccount: cloud-build-runner-tf@${PROJECT_ID}.iam.gserviceaccount.com
+
 steps:
-  - name: "gcr.io/cloud-builders/gcloud"
-    entrypoint: "bash"
-    args:
-      - "-c"
-      - |
-        # ビルドコンテナ内だけに env.yaml を作成
-        cat <<EOF > backend/env.yaml
-        SECRET_KEY: "${_SECRET_KEY}"
-        DATABASE_URL: "${_DATABASE_URL}"
-        ALLOWED_HOSTS: "${_ALLOWED_HOSTS}"
-        CSRF_TRUSTED_ORIGINS: "${_CSRF_TRUSTED_ORIGINS}"
-        CORS_ORIGIN_WHITELIST: "${_CORS_ORIGIN_WHITELIST}"
-        EOF
   # ステップ 1: Dockerイメージのビルド
   - name: "gcr.io/cloud-builders/docker"
     args:
       [
         "build",
         "-t",
-        "asia-northeast1-docker.pkg.dev/$PROJECT_ID/climate-change-app/climate-change-app-image",
+        "asia-northeast1-docker.pkg.dev/$PROJECT_ID/climate-change-app-v2/climate-change-app-image:$COMMIT_SHA",
         "-f",
         "backend/docker/Dockerfile.prod",
         "backend",
@@ -29,7 +19,7 @@ steps:
     args:
       [
         "push",
-        "asia-northeast1-docker.pkg.dev/$PROJECT_ID/climate-change-app/climate-change-app-image",
+        "asia-northeast1-docker.pkg.dev/$PROJECT_ID/climate-change-app-v2/climate-change-app-image:$COMMIT_SHA",
       ]
 
   # ステップ 3: Cloud Runにデプロイ
@@ -39,16 +29,14 @@ steps:
         "gcloud",
         "run",
         "deploy",
-        "climate-change-app",
+        "climate-change-app-v2",
         "--image",
-        "asia-northeast1-docker.pkg.dev/$PROJECT_ID/climate-change-app/climate-change-app-image",
-        "--platform",
-        "managed",
+        "asia-northeast1-docker.pkg.dev/$PROJECT_ID/climate-change-app-v2/climate-change-app-image:$COMMIT_SHA",
         "--region",
         "asia-northeast1",
+        "--platform",
+        "managed",
         "--allow-unauthenticated",
-        "--env-vars-file",
-        "backend/env.yaml",
       ]
 
 # オプション: ロギング設定
