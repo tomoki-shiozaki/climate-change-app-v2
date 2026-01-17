@@ -2,6 +2,7 @@
 
 [![Build Status](https://github.com/tomoki-shiozaki/climate-change-app-v2/actions/workflows/ci.yml/badge.svg)](https://github.com/tomoki-shiozaki/climate-change-app-v2/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/tomoki-shiozaki/climate-change-app-v2/graph/badge.svg?token=PERZWD42XB)](https://codecov.io/gh/tomoki-shiozaki/climate-change-app-v2)
+[![Terraform Plan](https://github.com/tomoki-shiozaki/climate-change-app-v2/actions/workflows/terraform-plan.yml/badge.svg)](https://github.com/tomoki-shiozaki/climate-change-app-v2/actions/workflows/terraform-plan.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 Django REST Framework と Next.js を使った、気候変動データの可視化アプリです。[気候変動データアプリ](https://github.com/tomoki-shiozaki/climate-change-app)のフロントエンドを Next.js に移行したバージョンです。
