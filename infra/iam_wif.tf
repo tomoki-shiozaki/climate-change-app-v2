@@ -9,10 +9,10 @@ resource "google_service_account" "terraform_sa" {
 }
 
 # 2️⃣ Service Account に必要な権限を付与
-# 例: Terraform がプロジェクト内で編集できる最小権限
-resource "google_project_iam_member" "terraform_sa_editor" {
+# Terraform Plan のみ実行する最小権限
+resource "google_project_iam_member" "terraform_sa_viewer" {
   project = var.project_id
-  role    = "roles/editor"
+  role    = "roles/viewer"
   member  = "serviceAccount:${google_service_account.terraform_sa.email}"
 }
 
