@@ -2,9 +2,9 @@ name: Terraform Plan
 
 on:
   workflow_dispatch: # 手動実行用
-#  pull_request:
-#    branches:
-#      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   plan:
