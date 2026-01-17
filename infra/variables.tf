@@ -1,13 +1,33 @@
-variable "project_id" {}
+variable "project_id" {
+  description = "Google Cloudの プロジェクト ID（文字列）"
+  type        = string
+}
+
+variable "project_number" {
+  description = "Google Cloudの プロジェクト番号（数字）"
+  type        = number
+}
+
 variable "region" {
-  default = "asia-northeast1"
+  description = "Google Cloud リージョン"
+  type        = string
+  default     = "asia-northeast1"
 }
+
 variable "service_name" {
-  default = "climate-change-app-v2"
+  description = "サービス名 / プロジェクト内リソースのプレフィックス"
+  type        = string
+  default     = "climate-change-app-v2"
 }
+
 variable "github_owner" {
-  default = "tomoki-shiozaki"
+  description = "GitHub リポジトリオーナー"
+  type        = string
+  default     = "tomoki-shiozaki"
 }
+
 variable "github_repo" {
-  default = "climate-change-app-v2"
+  description = "GitHub リポジトリ名"
+  type        = string
+  default     = "climate-change-app-v2"
 }
