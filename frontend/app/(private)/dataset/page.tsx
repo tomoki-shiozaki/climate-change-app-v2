@@ -35,8 +35,12 @@ export default function DatasetPage() {
       });
 
       setMessage(`アップロード成功: ID ${res.data.id}, 名前 ${res.data.name}`);
-    } catch (error: any) {
-      setMessage(`アップロード失敗: ${error?.message || "不明なエラー"}`);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setMessage(`アップロード失敗: ${error.message}`);
+      } else {
+        setMessage("アップロード失敗: 不明なエラー");
+      }
     } finally {
       setUploading(false);
     }
