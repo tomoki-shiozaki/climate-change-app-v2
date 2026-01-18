@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { apiClient } from "@/features/auth/api/apiClient";
 import { PageLayout } from "@/components/layout";
+import { Button } from "@/components/ui/button";
 
 export default function DatasetPage() {
   const [file, setFile] = useState<File | null>(null);
@@ -59,13 +60,9 @@ export default function DatasetPage() {
         className="mb-4"
       />
 
-      <button
-        onClick={handleUpload}
-        disabled={uploading}
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-      >
+      <Button onClick={handleUpload} disabled={uploading}>
         {uploading ? "アップロード中..." : "アップロード"}
-      </button>
+      </Button>
 
       {message && <p className="mt-4 text-gray-700">{message}</p>}
     </PageLayout>
