@@ -70,7 +70,9 @@ export default function DatasetPage() {
         />
 
         {file && (
-          <p className="text-sm text-muted-foreground">選択中: {file.name}</p>
+          <p className="text-sm text-muted-foreground">
+            選択中: <span className="font-medium">{file.name}</span>
+          </p>
         )}
       </div>
 
