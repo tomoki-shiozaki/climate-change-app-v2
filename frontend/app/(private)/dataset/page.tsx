@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { apiClient } from "@/features/auth/api/apiClient";
+import { PageLayout } from "@/components/layout";
 
 export default function DatasetPage() {
   const [file, setFile] = useState<File | null>(null);
@@ -47,9 +48,10 @@ export default function DatasetPage() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">データセットアップロード</h1>
-
+    <PageLayout
+      title="データセットアップロード"
+      description="CSV ファイルを選択してアップロードしてください"
+    >
       <input
         type="file"
         accept=".csv"
@@ -66,6 +68,6 @@ export default function DatasetPage() {
       </button>
 
       {message && <p className="mt-4 text-gray-700">{message}</p>}
-    </div>
+    </PageLayout>
   );
 }
