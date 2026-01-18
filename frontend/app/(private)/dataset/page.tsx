@@ -4,6 +4,7 @@ import { useState } from "react";
 import { apiClient } from "@/features/auth/api/apiClient";
 import { PageLayout } from "@/components/layout";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 
 export default function DatasetPage() {
   const [file, setFile] = useState<File | null>(null);
@@ -53,12 +54,25 @@ export default function DatasetPage() {
       title="データセットアップロード"
       description="CSV ファイルを選択してアップロードしてください"
     >
-      <input
-        type="file"
-        accept=".csv"
-        onChange={handleFileChange}
-        className="mb-4"
-      />
+      <div className="space-y-2">
+        <Label htmlFor="dataset-file">CSVファイル</Label>
+
+        <input
+          id="dataset-file"
+          type="file"
+          accept=".csv"
+          onChange={handleFileChange}
+          className="block w-full text-sm text-gray-600
+               file:mr-4 file:py-2 file:px-4
+               file:rounded-md file:border-0
+               file:bg-blue-50 file:text-blue-700
+               hover:file:bg-blue-100"
+        />
+
+        {file && (
+          <p className="text-sm text-muted-foreground">選択中: {file.name}</p>
+        )}
+      </div>
 
       <Button onClick={handleUpload} disabled={uploading}>
         {uploading ? "アップロード中..." : "アップロード"}
