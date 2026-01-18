@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { apiClient } from "@/features/auth/api/apiClient";
 
 export default function DatasetPage() {
   const [file, setFile] = useState<File | null>(null);
@@ -24,24 +25,18 @@ export default function DatasetPage() {
 
     try {
       const formData = new FormData();
-      formData.append("name", file.name); // Dataset 名
-      formData.append("source_file", file); // ファイル本体
+      formData.append("name", file.name);
+      formData.append("source_file", file);
 
-      const res = await fetch("/dataset/upload/", {
-        method: "POST",
-        body: formData,
-        credentials: "include", // Cookie 認証を使う場合
+      const res = await apiClient.post("/dataset/upload/", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
 
-      if (!res.ok) {
-        const err = await res.json();
-        setMessage(`アップロード失敗: ${JSON.stringify(err)}`);
-      } else {
-        const data = await res.json();
-        setMessage(`アップロード成功: ID ${data.id}, 名前 ${data.name}`);
-      }
-    } catch (error) {
-      setMessage(`アップロード中にエラー: ${error}`);
+      setMessage(`アップロード成功: ID ${res.data.id}, 名前 ${res.data.name}`);
+    } catch (error: any) {
+      setMessage(`アップロード失敗: ${error?.message || "不明なエラー"}`);
     } finally {
       setUploading(false);
     }
