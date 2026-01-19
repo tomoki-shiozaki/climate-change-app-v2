@@ -24,4 +24,23 @@ class Dataset(models.Model):
         default="uploaded",
     )
 
+    schema = models.JSONField(blank=True, null=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class DataPoint(models.Model):
+    dataset = models.ForeignKey(
+        Dataset,
+        on_delete=models.CASCADE,
+        related_name="data_points",
+    )
+    time = models.CharField(max_length=50)
+    value = models.FloatField()
+    series = models.CharField(max_length=255, blank=True)
+    row_index = models.IntegerField()
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["dataset", "time"]),
+        ]
