@@ -5,6 +5,7 @@ import { apiClient } from "@/features/auth/api/apiClient";
 import { PageLayout } from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function DatasetPage() {
   const [file, setFile] = useState<File | null>(null);
@@ -54,33 +55,48 @@ export default function DatasetPage() {
       title="データセットアップロード"
       description="CSV ファイルを選択してアップロードしてください"
     >
-      <div className="space-y-2">
-        <Label htmlFor="dataset-file">CSVファイル</Label>
+      <Card className="max-w-xl">
+        <CardContent className="space-y-6 pt-6">
+          {/* ファイル選択 */}
+          <div className="space-y-2">
+            <Label htmlFor="dataset-file">CSVファイル</Label>
 
-        <input
-          id="dataset-file"
-          type="file"
-          accept=".csv"
-          onChange={handleFileChange}
-          className="block w-full text-sm text-gray-600
-               file:mr-4 file:py-2 file:px-4
-               file:rounded-md file:border-0
-               file:bg-blue-50 file:text-blue-700
-               hover:file:bg-blue-100"
-        />
+            <input
+              id="dataset-file"
+              type="file"
+              accept=".csv"
+              onChange={handleFileChange}
+              className="
+              block w-full text-sm text-muted-foreground
+              file:mr-4 file:py-2 file:px-4
+              file:rounded-md file:border-0
+              file:bg-blue-50 file:text-blue-700
+              hover:file:bg-blue-100
+              disabled:cursor-not-allowed disabled:opacity-60
+            "
+              disabled={uploading}
+            />
 
-        {file && (
-          <p className="text-sm text-muted-foreground">
-            選択中: <span className="font-medium">{file.name}</span>
-          </p>
-        )}
-      </div>
+            {file && (
+              <p className="text-sm text-muted-foreground">
+                選択中: <span className="font-medium">{file.name}</span>
+              </p>
+            )}
+          </div>
 
-      <Button onClick={handleUpload} disabled={uploading}>
-        {uploading ? "アップロード中..." : "アップロード"}
-      </Button>
+          {/* アップロードボタン */}
+          <div className="flex justify-end">
+            <Button onClick={handleUpload} disabled={uploading || !file}>
+              {uploading ? "アップロード中..." : "アップロード"}
+            </Button>
+          </div>
 
-      {message && <p className="mt-4 text-gray-700">{message}</p>}
+          {/* メッセージ */}
+          {message && (
+            <p className="text-sm text-muted-foreground">{message}</p>
+          )}
+        </CardContent>
+      </Card>
     </PageLayout>
   );
 }
