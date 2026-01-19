@@ -9,6 +9,8 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export default function DatasetPage() {
   const [file, setFile] = useState<File | null>(null);
+  const [timeColumn, setTimeColumn] = useState(""); // schema: time列
+  const [valueColumn, setValueColumn] = useState(""); // schema: value列
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -23,6 +25,10 @@ export default function DatasetPage() {
       setMessage("ファイルを選択してください");
       return;
     }
+    if (!timeColumn || !valueColumn) {
+      setMessage("Time列とValue列を入力してください");
+      return;
+    }
 
     setUploading(true);
     setMessage(null);
@@ -31,6 +37,12 @@ export default function DatasetPage() {
       const formData = new FormData();
       formData.append("name", file.name);
       formData.append("source_file", file);
+
+      // schema を JSON 文字列で送信
+      formData.append(
+        "schema",
+        JSON.stringify({ time: timeColumn, value: valueColumn }),
+      );
 
       const res = await apiClient.post("/dataset/upload/", formData, {
         headers: {
@@ -60,23 +72,21 @@ export default function DatasetPage() {
           {/* ファイル選択 */}
           <div className="space-y-2">
             <Label htmlFor="dataset-file">CSVファイル</Label>
-
             <input
               id="dataset-file"
               type="file"
               accept=".csv"
               onChange={handleFileChange}
               className="
-              block w-full text-sm text-muted-foreground
-              file:mr-4 file:py-2 file:px-4
-              file:rounded-md file:border-0
-              file:bg-blue-50 file:text-blue-700
-              hover:file:bg-blue-100
-              disabled:cursor-not-allowed disabled:opacity-60
-            "
+                block w-full text-sm text-muted-foreground
+                file:mr-4 file:py-2 file:px-4
+                file:rounded-md file:border-0
+                file:bg-blue-50 file:text-blue-700
+                hover:file:bg-blue-100
+                disabled:cursor-not-allowed disabled:opacity-60
+              "
               disabled={uploading}
             />
-
             {file && (
               <p className="text-sm text-muted-foreground">
                 選択中: <span className="font-medium">{file.name}</span>
@@ -84,9 +94,37 @@ export default function DatasetPage() {
             )}
           </div>
 
+          {/* schema入力フォーム */}
+          <div className="space-y-2">
+            <Label htmlFor="time-column">Time列</Label>
+            <input
+              id="time-column"
+              type="text"
+              value={timeColumn}
+              onChange={(e) => setTimeColumn(e.target.value)}
+              className="block w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+              placeholder="例: timestamp"
+              disabled={uploading}
+            />
+
+            <Label htmlFor="value-column">Value列</Label>
+            <input
+              id="value-column"
+              type="text"
+              value={valueColumn}
+              onChange={(e) => setValueColumn(e.target.value)}
+              className="block w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+              placeholder="例: value"
+              disabled={uploading}
+            />
+          </div>
+
           {/* アップロードボタン */}
           <div className="flex justify-end">
-            <Button onClick={handleUpload} disabled={uploading || !file}>
+            <Button
+              onClick={handleUpload}
+              disabled={uploading || !file || !timeColumn || !valueColumn}
+            >
               {uploading ? "アップロード中..." : "アップロード"}
             </Button>
           </div>
