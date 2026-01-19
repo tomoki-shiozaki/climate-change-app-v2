@@ -28,6 +28,17 @@ export default function HomePage() {
             国・地域ごとのCO₂排出量の推移を地図で確認できます。
           </p>
         </CardLink>
+
+        {/* Dataset アップロード */}
+        <CardLink href="/dataset">
+          <h2 className="text-xl font-semibold text-blue-600 mb-2">
+            データセットアップロード
+          </h2>
+          <p className="text-gray-500 text-sm">
+            CSV
+            ファイルなどの気候データをアップロードして、分析用に登録できます。
+          </p>
+        </CardLink>
       </div>
     </HomeLayout>
   );

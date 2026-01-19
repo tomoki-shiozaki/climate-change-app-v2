@@ -86,6 +86,7 @@ INSTALLED_APPS = [
     "apps.accounts.apps.AccountsConfig",
     "apps.api.apps.ApiConfig",
     "apps.climate_data.apps.ClimateDataConfig",
+    "apps.dataset.apps.DatasetConfig",
 ]
 
 # ================================
@@ -268,6 +269,12 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# ================================
+# Media files (uploads)
+# ================================
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 
 # ================================

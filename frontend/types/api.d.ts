@@ -44,6 +44,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/dataset/upload/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * @description Dataset のアップロード専用 API
+         *     Next.js からファイルをアップロード可能
+         */
+        post: operations["dataset_upload_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/dj-rest-auth/login/": {
         parameters: {
             query?: never;
@@ -349,6 +369,16 @@ export interface components {
                 };
             };
         };
+        Dataset: {
+            readonly id: number;
+            name: string;
+            /** Format: uri */
+            source_file: string;
+            readonly owner: number;
+            readonly status: string;
+            /** Format: date-time */
+            readonly created_at: string;
+        };
         /** @description Serializer for JWT authentication. */
         JWT: {
             access: string;
@@ -495,6 +525,31 @@ export interface operations {
                             global_average?: number | null;
                         }[];
                     };
+                };
+            };
+        };
+    };
+    dataset_upload_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Dataset"];
+                "application/x-www-form-urlencoded": components["schemas"]["Dataset"];
+                "multipart/form-data": components["schemas"]["Dataset"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Dataset"];
                 };
             };
         };
