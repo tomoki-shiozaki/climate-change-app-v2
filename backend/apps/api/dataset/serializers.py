@@ -22,6 +22,20 @@ class DatasetSerializer(serializers.ModelSerializer):
             "created_at",
         ]
 
+    def validate_schema(self, value):
+        """
+        schemaに必ず'time'と'value'が含まれていることを確認
+        """
+        if not isinstance(value, dict):
+            raise serializers.ValidationError("schema must be a JSON object")
+        required_keys = ["time", "value"]
+        missing_keys = [k for k in required_keys if k not in value]
+        if missing_keys:
+            raise serializers.ValidationError(
+                f"schema is missing required keys: {', '.join(missing_keys)}"
+            )
+        return value
+
     def create(self, validated_data):
         # リクエストのユーザーを owner にセット
         request = self.context.get("request")
