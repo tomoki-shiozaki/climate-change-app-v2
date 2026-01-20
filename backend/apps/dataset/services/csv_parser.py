@@ -1,4 +1,5 @@
 import csv
+import io
 
 from apps.dataset.models import DataPoint, Dataset
 
@@ -13,8 +14,9 @@ def parse_dataset_csv(dataset: Dataset) -> None:
         return
 
     try:
-        with dataset.source_file.open("r") as f:
-            reader = csv.DictReader(f)
+        with dataset.source_file.open("rb") as f:
+            text_file = io.TextIOWrapper(f, encoding="utf-8")
+            reader = csv.DictReader(text_file)
 
             required_fields = {"time", "value"}
             if not required_fields.issubset(reader.fieldnames or []):
