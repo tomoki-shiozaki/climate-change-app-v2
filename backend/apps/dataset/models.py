@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.db import models
+from django.db import models, transaction
 from django.utils.translation import gettext_lazy as _
 
 
@@ -31,11 +31,21 @@ class Dataset(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def mark_processing(self):
-        if self.status != self.Status.UPLOADED:
-            return False
-        self.status = self.Status.PROCESSING
-        self.save(update_fields=["status"])
+    def mark_processing(self) -> bool:
+        """
+        uploaded → processing への遷移をアトミックに行う
+        """
+        with transaction.atomic():
+            locked = (
+                Dataset.objects.select_for_update().only("id", "status").get(pk=self.pk)
+            )
+
+            if locked.status != self.Status.UPLOADED:
+                return False
+
+            locked.status = self.Status.PROCESSING
+            locked.save(update_fields=["status"])
+
         return True
 
     def mark_parsed(self, schema: dict | None = None):
