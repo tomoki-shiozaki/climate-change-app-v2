@@ -69,6 +69,27 @@ export default function DatasetPage() {
     >
       <Card className="max-w-xl">
         <CardContent className="space-y-6 pt-6">
+          {/* CSV形式の説明 */}
+          <div className="rounded-md border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900">
+            <p className="font-medium mb-1">CSVファイルの形式について</p>
+            <ul className="list-disc pl-5 space-y-1">
+              <li>
+                CSVファイルの<strong>1行目はヘッダ行</strong>
+                である必要があります。
+              </li>
+              <li>
+                <strong>Time列</strong>・<strong>Value列</strong>には、
+                ヘッダ行に記載されている列名を入力してください。
+              </li>
+              <li>
+                指定した列名がCSVに存在しない場合、アップロードは失敗します。
+              </li>
+            </ul>
+            <p className="mt-2">
+              例:{" "}
+              <code className="rounded bg-white px-1">time,value,series</code>
+            </p>
+          </div>
           {/* ファイル選択 */}
           <div className="space-y-2">
             <Label htmlFor="dataset-file">CSVファイル</Label>

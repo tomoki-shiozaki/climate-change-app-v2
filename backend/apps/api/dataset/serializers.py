@@ -1,3 +1,5 @@
+import csv
+
 from rest_framework import serializers
 
 from apps.dataset.models import Dataset
@@ -21,6 +23,38 @@ class DatasetSerializer(serializers.ModelSerializer):
             "schema",
             "created_at",
         ]
+
+    def validate(self, attrs):
+        source_file = attrs.get("source_file")
+        schema = attrs.get("schema")
+
+        # 両方そろっているときだけチェック
+        if not source_file or not schema:
+            return attrs
+
+        time_col = schema.get("time")
+        value_col = schema.get("value")
+
+        # ファイルポインタを先頭へ
+        source_file.seek(0)
+
+        try:
+            decoded = source_file.read().decode("utf-8").splitlines()
+            reader = csv.reader(decoded)
+            header = next(reader)
+        except Exception:
+            raise serializers.ValidationError("CSVファイルのヘッダ行を読み取れません")
+
+        missing = [col for col in (time_col, value_col) if col not in header]
+        if missing:
+            raise serializers.ValidationError(
+                f"CSVに存在しない列名: {', '.join(missing)}"
+            )
+
+        # 後続処理のために戻す
+        source_file.seek(0)
+
+        return attrs
 
     def validate_schema(self, value):
         """
