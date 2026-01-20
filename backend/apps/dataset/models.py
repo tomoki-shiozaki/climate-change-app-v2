@@ -31,6 +31,24 @@ class Dataset(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def mark_processing(self):
+        if self.status != self.Status.UPLOADED:
+            return False
+        self.status = self.Status.PROCESSING
+        self.save(update_fields=["status"])
+        return True
+
+    def mark_parsed(self, schema: dict | None = None):
+        self.status = self.Status.PARSED
+        if schema is not None:
+            self.schema = schema
+        self.save(update_fields=["status", "schema"])
+
+    def mark_failed(self, error: Exception):
+        self.status = self.Status.FAILED
+        self.schema = {"error": str(error)}
+        self.save(update_fields=["status", "schema"])
+
 
 class DataPoint(models.Model):
     dataset = models.ForeignKey(
