@@ -35,24 +35,39 @@ class DatasetSerializer(serializers.ModelSerializer):
         time_col = schema.get("time")
         value_col = schema.get("value")
 
-        # ファイルポインタを先頭へ
-        source_file.seek(0)
+        if not time_col or not value_col:
+            # validate_schema で弾かれる想定だが念のため
+            return attrs
 
+        # ヘッダ行だけ読む
         try:
-            decoded = source_file.read().decode("utf-8").splitlines()
-            reader = csv.reader(decoded)
+            source_file.seek(0)
+            raw_line = source_file.readline()
+            header_line = raw_line.decode("utf-8-sig")
+        except UnicodeDecodeError:
+            raise serializers.ValidationError(
+                "CSVの文字コードはUTF-8である必要があります"
+            )
+        finally:
+            source_file.seek(0)
+
+        if not header_line.strip():
+            raise serializers.ValidationError("CSVにヘッダ行が存在しません")
+
+        # csvとして正しく分解
+        try:
+            reader = csv.reader([header_line])
             header = next(reader)
         except Exception:
-            raise serializers.ValidationError("CSVファイルのヘッダ行を読み取れません")
+            raise serializers.ValidationError("CSVのヘッダ行を正しく解析できません")
+
+        header = [h.strip() for h in header]
 
         missing = [col for col in (time_col, value_col) if col not in header]
         if missing:
             raise serializers.ValidationError(
                 f"CSVに存在しない列名: {', '.join(missing)}"
             )
-
-        # 後続処理のために戻す
-        source_file.seek(0)
 
         return attrs
 
