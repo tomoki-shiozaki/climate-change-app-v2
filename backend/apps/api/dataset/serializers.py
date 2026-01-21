@@ -104,13 +104,3 @@ class DatasetSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 f"CSVに存在しない列名: {', '.join(missing)}"
             )
-
-    # --------------------
-    # Create
-    # --------------------
-    def create(self, validated_data):
-        # リクエストのユーザーを owner にセット
-        request = self.context.get("request")
-        if request and hasattr(request, "user"):
-            validated_data["owner"] = request.user
-        return super().create(validated_data)
