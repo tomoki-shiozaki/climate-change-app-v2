@@ -35,19 +35,7 @@ def parse_row_value(value_str: str, row_idx: int):
 
 
 # -----------------------------
-# 3️⃣ DataPoint 作成関数
-# -----------------------------
-def create_datapoint(dataset: Dataset, row: dict, idx: int) -> DataPoint:
-    dt = parse_row_time(row.get("time") or "", idx)
-    value = parse_row_value(row.get("value") or "", idx)
-    series = row.get("series", "") or ""
-    return DataPoint(
-        dataset=dataset, time=dt, value=value, series=series, row_index=idx
-    )
-
-
-# -----------------------------
-# 4️⃣ メイン CSV パース関数
+# 3️⃣ メイン CSV パース関数
 # -----------------------------
 def parse_dataset_csv(dataset: Dataset) -> None:
     """
