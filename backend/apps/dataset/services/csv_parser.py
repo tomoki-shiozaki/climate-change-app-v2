@@ -10,6 +10,45 @@ from apps.dataset.models import DataPoint, Dataset
 BATCH_SIZE = 1000
 
 
+# -----------------------------
+# 1️⃣ 時刻パース関数
+# -----------------------------
+def parse_row_time(raw_time: str, row_idx: int):
+    if not raw_time:
+        raise ValueError(f"time が空です (row={row_idx})")
+    dt = parse_datetime(raw_time)
+    if dt is None:
+        raise ValueError(f"Invalid datetime format: {raw_time} (row={row_idx})")
+    if is_naive(dt):
+        dt = make_aware(dt)
+    return dt
+
+
+# -----------------------------
+# 2️⃣ 値パース関数
+# -----------------------------
+def parse_row_value(value_str: str, row_idx: int):
+    try:
+        return float(value_str)
+    except (TypeError, ValueError):
+        raise ValueError(f"Invalid value: {value_str} (row={row_idx})")
+
+
+# -----------------------------
+# 3️⃣ DataPoint 作成関数
+# -----------------------------
+def create_datapoint(dataset: Dataset, row: dict, idx: int) -> DataPoint:
+    dt = parse_row_time(row.get("time") or "", idx)
+    value = parse_row_value(row.get("value") or "", idx)
+    series = row.get("series", "") or ""
+    return DataPoint(
+        dataset=dataset, time=dt, value=value, series=series, row_index=idx
+    )
+
+
+# -----------------------------
+# 4️⃣ メイン CSV パース関数
+# -----------------------------
 def parse_dataset_csv(dataset: Dataset) -> None:
     """
     Dataset.source_file の CSV を parse して DataPoint を作成する
@@ -21,6 +60,7 @@ def parse_dataset_csv(dataset: Dataset) -> None:
 
     try:
         with dataset.source_file.open("rb") as f:
+            # バイナリファイルをテキストとして読み込み、CSVを辞書形式で扱えるようにする
             text_file = io.TextIOWrapper(f, encoding="utf-8")
             reader = csv.DictReader(text_file)
 
@@ -29,6 +69,7 @@ def parse_dataset_csv(dataset: Dataset) -> None:
                 raise ValueError("CSV に time,value 列がありません")
 
             schema = {
+                # CSV の列名（ヘッダ行）を保存しておく
                 "columns": reader.fieldnames,
                 "row_count": 0,
                 "row_index_base": 0,
@@ -39,39 +80,10 @@ def parse_dataset_csv(dataset: Dataset) -> None:
 
             with transaction.atomic():
                 for idx, row in enumerate(reader):
-                    # --- time のパース ---
-                    raw_time = row.get("time")
-                    if not raw_time:
-                        raise ValueError(f"time が空です (row={idx})")
+                    dp = create_datapoint(dataset, row, idx)
+                    buffer.append(dp)
 
-                    dt = parse_datetime(raw_time)
-                    if dt is None:
-                        raise ValueError(
-                            f"Invalid datetime format: {raw_time} (row={idx})"
-                        )
-
-                    if is_naive(dt):
-                        dt = make_aware(dt)
-
-                    # --- value のパース ---
-                    try:
-                        value = float(row["value"])
-                    except (KeyError, ValueError):
-                        raise ValueError(
-                            f"Invalid value: {row.get('value')} (row={idx})"
-                        )
-
-                    buffer.append(
-                        DataPoint(
-                            dataset=dataset,
-                            time=dt,
-                            value=value,
-                            series=row.get("series", "") or "",
-                            row_index=idx,
-                        )
-                    )
-
-                    # --- chunk insert ---
+                    # chunk insert
                     if len(buffer) >= BATCH_SIZE:
                         DataPoint.objects.bulk_create(buffer)
                         total_rows += len(buffer)
