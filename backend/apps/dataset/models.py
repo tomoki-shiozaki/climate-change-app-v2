@@ -66,12 +66,23 @@ class DataPoint(models.Model):
         on_delete=models.CASCADE,
         related_name="data_points",
     )
-    time = models.CharField(max_length=50)
+
+    time = models.DateTimeField()
     value = models.FloatField()
-    series = models.CharField(max_length=255, blank=True)
+    series = models.CharField(
+        max_length=255,
+        blank=True,
+        default="",
+    )
     row_index = models.IntegerField()
 
     class Meta:
         indexes = [
             models.Index(fields=["dataset", "time"]),
+        ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["dataset", "row_index"],
+                name="uniq_dataset_row",
+            )
         ]
