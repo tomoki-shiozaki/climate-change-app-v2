@@ -79,6 +79,8 @@ def parse_dataset_csv(dataset: Dataset) -> None:
             total_rows = 0
 
             with transaction.atomic():
+                # CSV を1行ずつ読み込む。
+                # idx は 0 から始まる行番号で、DataPoint の row_index に使用
                 for idx, row in enumerate(reader):
                     dp = create_datapoint(dataset, row, idx)
                     buffer.append(dp)
