@@ -96,6 +96,7 @@ def parse_dataset_csv(dataset: Dataset) -> None:
 
                 dp = DataPoint(
                     dataset=dataset,
+                    raw_time=dt_str,
                     time=parse_row_time(dt_str, idx),
                     value=parse_row_value(val_str, idx),
                     series=series_val,
