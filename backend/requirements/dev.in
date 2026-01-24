@@ -4,4 +4,3 @@ pytest-django
 pytest-cov
 drf-spectacular
 celery
-redis
