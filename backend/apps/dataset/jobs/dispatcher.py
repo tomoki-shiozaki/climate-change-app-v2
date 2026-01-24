@@ -2,8 +2,6 @@ from django.conf import settings
 
 from apps.dataset.tasks import parse_dataset_task
 
-# 将来 Pub/Sub 用関数もここに import 可能
-
 
 def enqueue_parse_dataset(dataset_id: int):
     """
@@ -11,11 +9,11 @@ def enqueue_parse_dataset(dataset_id: int):
     開発環境：Celery eager
     本番環境：Pub/Sub
     """
-    backend = getattr(settings, "QUEUE_BACKEND", "celery")
 
-    if backend == "celery":
+    if settings.IS_DEVELOPMENT:
+        # 開発環境 → Celery で即時実行（eager）
         parse_dataset_task.delay(dataset_id)
-    elif backend == "pubsub":
+    elif settings.IS_PRODUCTION:
+        # 本番環境 → Pub/Sub
         # publish_parse_dataset(dataset_id)
-        # Pub/Sub 実装は後でここに置く
         pass
