@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { apiClient } from "@/features/auth/api/apiClient";
+import type { DatasetUploadResponse } from "@/features/dataset/types/dataset";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
@@ -50,11 +51,15 @@ export function DatasetUploadForm() {
 
       formData.append("schema", JSON.stringify(schema));
 
-      const res = await apiClient.post("/dataset/upload/", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
+      const res = await apiClient.post<DatasetUploadResponse>(
+        "/dataset/upload/",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         },
-      });
+      );
 
       setMessage(`アップロード成功: ID ${res.data.id}, 名前 ${res.data.name}`);
     } catch (error: unknown) {
