@@ -8,8 +8,8 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export function DatasetUploadForm() {
   const [file, setFile] = useState<File | null>(null);
-  const [timeColumn, setTimeColumn] = useState("");
-  const [valueColumn, setValueColumn] = useState("");
+  const [timeColumn, setTimeColumn] = useState(""); // schema: time列
+  const [valueColumn, setValueColumn] = useState(""); // schema: value列
   const [seriesColumn, setSeriesColumn] = useState("");
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -21,8 +21,12 @@ export function DatasetUploadForm() {
   };
 
   const handleUpload = async () => {
-    if (!file || !timeColumn || !valueColumn) {
-      setMessage("ファイルと列情報を入力してください");
+    if (!file) {
+      setMessage("ファイルを選択してください");
+      return;
+    }
+    if (!timeColumn || !valueColumn) {
+      setMessage("Time列とValue列を入力してください");
       return;
     }
 
@@ -33,22 +37,32 @@ export function DatasetUploadForm() {
       const formData = new FormData();
       formData.append("name", file.name);
       formData.append("source_file", file);
+
+      // schema を JSON 文字列で送信（series は任意）
       const schema: Record<string, string> = {
         time: timeColumn,
         value: valueColumn,
       };
-      if (seriesColumn) schema.series = seriesColumn;
+
+      if (seriesColumn) {
+        schema.series = seriesColumn;
+      }
+
       formData.append("schema", JSON.stringify(schema));
 
       const res = await apiClient.post("/dataset/upload/", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
 
       setMessage(`アップロード成功: ID ${res.data.id}, 名前 ${res.data.name}`);
     } catch (error: unknown) {
-      if (error instanceof Error)
+      if (error instanceof Error) {
         setMessage(`アップロード失敗: ${error.message}`);
-      else setMessage("アップロード失敗: 不明なエラー");
+      } else {
+        setMessage("アップロード失敗: 不明なエラー");
+      }
     } finally {
       setUploading(false);
     }
