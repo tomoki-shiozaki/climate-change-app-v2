@@ -8,10 +8,17 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+type UploadVars = {
+  file: File;
+  timeColumn: string; // schema: time列
+  valueColumn: string; // schema: value列
+  seriesColumn?: string;
+};
+
 export function DatasetUploadForm() {
   const [file, setFile] = useState<File | null>(null);
-  const [timeColumn, setTimeColumn] = useState(""); // schema: time列
-  const [valueColumn, setValueColumn] = useState(""); // schema: value列
+  const [timeColumn, setTimeColumn] = useState("");
+  const [valueColumn, setValueColumn] = useState("");
   const [seriesColumn, setSeriesColumn] = useState("");
   const [message, setMessage] = useState<string | null>(null);
 
@@ -24,8 +31,8 @@ export function DatasetUploadForm() {
   const queryClient = useQueryClient();
 
   const uploadMutation = useMutation({
-    mutationFn: async () => {
-      if (!file) throw new Error("ファイルがありません");
+    mutationFn: async (vars: UploadVars) => {
+      const { file, timeColumn, valueColumn, seriesColumn } = vars;
 
       const formData = new FormData();
       formData.append("name", file.name);
@@ -82,7 +89,12 @@ export function DatasetUploadForm() {
     }
 
     setMessage(null);
-    uploadMutation.mutate();
+    uploadMutation.mutate({
+      file,
+      timeColumn,
+      valueColumn,
+      seriesColumn: seriesColumn || undefined,
+    });
   };
 
   const uploading = uploadMutation.isPending;
