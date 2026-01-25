@@ -1,19 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { apiClient } from "@/features/auth/api/apiClient";
-import type { DatasetUploadResponse } from "@/features/dataset/types/dataset";
+import { uploadDataset } from "@/features/dataset/api/uploadDataset";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-
-type UploadVars = {
-  file: File;
-  timeColumn: string; // schema: time列
-  valueColumn: string; // schema: value列
-  seriesColumn?: string;
-};
 
 export function DatasetUploadForm() {
   const [file, setFile] = useState<File | null>(null);
@@ -31,36 +23,7 @@ export function DatasetUploadForm() {
   const queryClient = useQueryClient();
 
   const uploadMutation = useMutation({
-    mutationFn: async (vars: UploadVars) => {
-      const { file, timeColumn, valueColumn, seriesColumn } = vars;
-
-      const formData = new FormData();
-      formData.append("name", file.name);
-      formData.append("source_file", file);
-
-      const schema: Record<string, string> = {
-        time: timeColumn,
-        value: valueColumn,
-      };
-
-      if (seriesColumn) {
-        schema.series = seriesColumn;
-      }
-
-      formData.append("schema", JSON.stringify(schema));
-
-      const res = await apiClient.post<DatasetUploadResponse>(
-        "/dataset/upload/",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        },
-      );
-
-      return res.data;
-    },
+    mutationFn: uploadDataset,
 
     onSuccess: (data) => {
       setMessage(`アップロード成功: ID ${data.id}, 名前 ${data.name}`);
