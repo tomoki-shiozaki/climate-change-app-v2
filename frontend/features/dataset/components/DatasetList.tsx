@@ -2,7 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
-import { fetchDatasetList } from "@/features/dataset/api/dataset";
+import { fetchDatasetList } from "@/features/dataset/api/fetchDatasetList";
 import type {
   DatasetList,
   DatasetStatus,
