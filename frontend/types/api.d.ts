@@ -418,6 +418,21 @@ export interface components {
             email?: string;
             password: string;
         };
+        PaginatedDatasetListList: {
+            /** @example 123 */
+            count: number;
+            /**
+             * Format: uri
+             * @example http://api.example.org/accounts/?offset=400&limit=100
+             */
+            next?: string | null;
+            /**
+             * Format: uri
+             * @example http://api.example.org/accounts/?offset=200&limit=100
+             */
+            previous?: string | null;
+            results: components["schemas"]["DatasetList"][];
+        };
         PasswordChange: {
             new_password1: string;
             new_password2: string;
@@ -566,7 +581,12 @@ export interface operations {
     };
     dataset_list_list: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Number of results to return per page. */
+                limit?: number;
+                /** @description The initial index from which to return the results. */
+                offset?: number;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -578,7 +598,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["DatasetList"][];
+                    "application/json": components["schemas"]["PaginatedDatasetListList"];
                 };
             };
         };

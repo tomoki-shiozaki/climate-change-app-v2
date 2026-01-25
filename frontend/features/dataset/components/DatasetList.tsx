@@ -1,7 +1,8 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { fetchDatasetList } from "@/features/dataset/api/fetchDatasetList";
 import type {
   DatasetList,
@@ -16,38 +17,61 @@ const STATUS_LABEL: Record<DatasetStatus, string> = {
 };
 
 export function DatasetList() {
-  const {
-    data: datasets = [],
-    isLoading,
-    error,
-  } = useQuery<DatasetList>({
-    queryKey: ["datasets"],
-    queryFn: fetchDatasetList,
+  const [offset, setOffset] = useState(0);
+  const [allDatasets, setAllDatasets] = useState<DatasetList["results"]>([]);
+  const [hasNext, setHasNext] = useState<boolean>(true);
+  const limit = 10;
 
-    // processing が存在する間だけ 3 秒ポーリング
+  const { data, isLoading, isFetching, error } = useQuery({
+    queryKey: ["datasets", offset],
+    queryFn: () => fetchDatasetList({ limit, offset }),
+    placeholderData: keepPreviousData,
     refetchInterval: (query) =>
-      query.state.data?.some((ds) => ds.status === "processing") ? 3000 : false,
+      query.state.data?.results.some((ds) => ds.status === "processing")
+        ? 3000
+        : false,
   });
+
+  // データが取得されたらローカルステートに追加
+  useEffect(() => {
+    if (!data?.results) return;
+
+    queueMicrotask(() => {
+      setAllDatasets((prev) => {
+        const newItems = data.results.filter(
+          (item) => !prev.some((p) => p.id === item.id),
+        );
+        return [...prev, ...newItems];
+      });
+      setHasNext(Boolean(data.next));
+    });
+  }, [data?.results, data?.next]);
+
+  const handleLoadMore = () => {
+    if (hasNext) setOffset((prev) => prev + limit);
+  };
 
   return (
     <Card className="max-w-2xl">
       <CardContent className="pt-6 space-y-4">
         <h2 className="text-xl font-semibold text-blue-600">CSV一覧</h2>
 
-        {isLoading && <p className="text-sm text-gray-500">読み込み中…</p>}
+        {isLoading && offset === 0 && (
+          <p className="text-sm text-gray-500">読み込み中…</p>
+        )}
 
         {error && (
           <p className="text-sm text-red-500">{(error as Error).message}</p>
         )}
 
-        {!isLoading && datasets.length === 0 && (
+        {!isLoading && allDatasets.length === 0 && (
           <p className="text-sm text-gray-500">
             まだCSVがアップロードされていません。
           </p>
         )}
 
         <ul className="space-y-2">
-          {datasets.map((ds) => (
+          {allDatasets.map((ds) => (
             <li
               key={ds.id}
               className="border rounded-lg p-3 flex items-center justify-between"
@@ -72,6 +96,17 @@ export function DatasetList() {
             </li>
           ))}
         </ul>
+
+        {/* 「もっと見る」ボタンは next がある場合のみ表示 */}
+        {hasNext && (
+          <button
+            className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+            onClick={handleLoadMore}
+            disabled={isFetching}
+          >
+            {isFetching ? "読み込み中…" : "もっと見る"}
+          </button>
+        )}
       </CardContent>
     </Card>
   );
