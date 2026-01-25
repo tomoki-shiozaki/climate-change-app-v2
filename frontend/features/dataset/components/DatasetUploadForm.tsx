@@ -6,13 +6,13 @@ import type { DatasetUploadResponse } from "@/features/dataset/types/dataset";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export function DatasetUploadForm() {
   const [file, setFile] = useState<File | null>(null);
   const [timeColumn, setTimeColumn] = useState(""); // schema: time列
   const [valueColumn, setValueColumn] = useState(""); // schema: value列
   const [seriesColumn, setSeriesColumn] = useState("");
-  const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,25 +21,16 @@ export function DatasetUploadForm() {
     }
   };
 
-  const handleUpload = async () => {
-    if (!file) {
-      setMessage("ファイルを選択してください");
-      return;
-    }
-    if (!timeColumn || !valueColumn) {
-      setMessage("Time列とValue列を入力してください");
-      return;
-    }
+  const queryClient = useQueryClient();
 
-    setUploading(true);
-    setMessage(null);
+  const uploadMutation = useMutation({
+    mutationFn: async () => {
+      if (!file) throw new Error("ファイルがありません");
 
-    try {
       const formData = new FormData();
       formData.append("name", file.name);
       formData.append("source_file", file);
 
-      // schema を JSON 文字列で送信（series は任意）
       const schema: Record<string, string> = {
         time: timeColumn,
         value: valueColumn,
@@ -61,17 +52,40 @@ export function DatasetUploadForm() {
         },
       );
 
-      setMessage(`アップロード成功: ID ${res.data.id}, 名前 ${res.data.name}`);
-    } catch (error: unknown) {
+      return res.data;
+    },
+
+    onSuccess: (data) => {
+      setMessage(`アップロード成功: ID ${data.id}, 名前 ${data.name}`);
+
+      // ⭐ CSV一覧を即更新
+      queryClient.invalidateQueries({ queryKey: ["datasets"] });
+    },
+
+    onError: (error) => {
       if (error instanceof Error) {
         setMessage(`アップロード失敗: ${error.message}`);
       } else {
         setMessage("アップロード失敗: 不明なエラー");
       }
-    } finally {
-      setUploading(false);
+    },
+  });
+
+  const handleUpload = () => {
+    if (!file) {
+      setMessage("ファイルを選択してください");
+      return;
     }
+    if (!timeColumn || !valueColumn) {
+      setMessage("Time列とValue列を入力してください");
+      return;
+    }
+
+    setMessage(null);
+    uploadMutation.mutate();
   };
+
+  const uploading = uploadMutation.isPending;
 
   return (
     <Card className="max-w-xl">
