@@ -132,6 +132,7 @@ export function DatasetUploadForm() {
         <div className="space-y-2">
           <Label htmlFor="dataset-file">CSVファイル</Label>
           <input
+            key={file?.name ?? "empty"}
             id="dataset-file"
             type="file"
             accept=".csv"
