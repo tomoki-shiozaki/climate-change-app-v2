@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import { useQuery } from "@tanstack/react-query";
 import { fetchDatasetList } from "@/features/dataset/api/dataset";
 import type {
   DatasetList,
@@ -16,35 +16,31 @@ const STATUS_LABEL: Record<DatasetStatus, string> = {
 };
 
 export function DatasetList() {
-  const [datasets, setDatasets] = useState<DatasetList>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    data: datasets = [],
+    isLoading,
+    error,
+  } = useQuery<DatasetList>({
+    queryKey: ["datasets"],
+    queryFn: fetchDatasetList,
 
-  useEffect(() => {
-    const fetchDatasets = async () => {
-      try {
-        const data = await fetchDatasetList();
-        setDatasets(data);
-      } catch (e) {
-        setError((e as Error).message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDatasets();
-  }, []);
+    // processing が存在する間だけ 3 秒ポーリング
+    refetchInterval: (query) =>
+      query.state.data?.some((ds) => ds.status === "processing") ? 3000 : false,
+  });
 
   return (
     <Card className="max-w-2xl">
       <CardContent className="pt-6 space-y-4">
         <h2 className="text-xl font-semibold text-blue-600">CSV一覧</h2>
 
-        {loading && <p className="text-sm text-gray-500">読み込み中…</p>}
+        {isLoading && <p className="text-sm text-gray-500">読み込み中…</p>}
 
-        {error && <p className="text-sm text-red-500">{error}</p>}
+        {error && (
+          <p className="text-sm text-red-500">{(error as Error).message}</p>
+        )}
 
-        {!loading && datasets.length === 0 && (
+        {!isLoading && datasets.length === 0 && (
           <p className="text-sm text-gray-500">
             まだCSVがアップロードされていません。
           </p>
