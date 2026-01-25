@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import { fetchDatasetList } from "@/features/dataset/api/dataset";
 import type {
   DatasetList,
   DatasetStatus,
@@ -22,18 +23,10 @@ export function DatasetList() {
   useEffect(() => {
     const fetchDatasets = async () => {
       try {
-        const res = await fetch("/api/datasets/", {
-          credentials: "include",
-        });
-
-        if (!res.ok) {
-          throw new Error("一覧の取得に失敗しました");
-        }
-
-        const data = await res.json();
+        const data = await fetchDatasetList();
         setDatasets(data);
-      } catch (e: any) {
-        setError(e.message);
+      } catch (e) {
+        setError((e as Error).message);
       } finally {
         setLoading(false);
       }
