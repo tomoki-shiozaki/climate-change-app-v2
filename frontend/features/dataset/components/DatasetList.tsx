@@ -38,6 +38,7 @@ export function DatasetList() {
 
     queueMicrotask(() => {
       setAllDatasets((prev) => {
+        // すでに表示済みの Dataset を除外して、新規分だけ追加（重複防止）
         const newItems = data.results.filter(
           (item) => !prev.some((p) => p.id === item.id),
         );
@@ -79,7 +80,7 @@ export function DatasetList() {
               <div>
                 <p className="font-medium">{ds.name}</p>
                 <p className="text-xs text-gray-500">
-                  {new Date(ds.created_at).toLocaleString()}
+                  {new Date(ds.created_at).toLocaleString()} {ds.id}
                 </p>
               </div>
 
