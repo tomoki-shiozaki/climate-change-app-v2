@@ -44,6 +44,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/dataset/list/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description ログインユーザーの Dataset 一覧を返す API */
+        get: operations["dataset_list_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/dataset/upload/": {
         parameters: {
             query?: never;
@@ -380,6 +397,15 @@ export interface components {
             /** Format: date-time */
             readonly created_at: string;
         };
+        DatasetList: {
+            readonly id: number;
+            readonly name: string;
+            readonly status: components["schemas"]["StatusEnum"];
+            /** Format: date-time */
+            readonly created_at: string;
+            readonly schema: unknown;
+            readonly parse_result: unknown;
+        };
         /** @description Serializer for JWT authentication. */
         JWT: {
             access: string;
@@ -444,6 +470,14 @@ export interface components {
         RestAuthDetail: {
             readonly detail: string;
         };
+        /**
+         * @description * `uploaded` - アップロード済み
+         *     * `processing` - 処理中
+         *     * `parsed` - 解析完了
+         *     * `failed` - 失敗
+         * @enum {string}
+         */
+        StatusEnum: "uploaded" | "processing" | "parsed" | "failed";
         TokenRefresh: {
             readonly access: string;
             refresh: string;
@@ -526,6 +560,25 @@ export interface operations {
                             global_average?: number | null;
                         }[];
                     };
+                };
+            };
+        };
+    };
+    dataset_list_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DatasetList"][];
                 };
             };
         };

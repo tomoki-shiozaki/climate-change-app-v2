@@ -98,6 +98,41 @@
                 }
             }
         },
+        "/api/v1/dataset/list/": {
+            "get": {
+                "operationId": "dataset_list_list",
+                "description": "ログインユーザーの Dataset 一覧を返す API",
+                "tags": [
+                    "dataset"
+                ],
+                "security": [
+                    {
+                        "jwtAuth": []
+                    },
+                    {
+                        "jwtHeaderAuth": []
+                    },
+                    {
+                        "jwtCookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/DatasetList"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/api/v1/dataset/upload/": {
             "post": {
                 "operationId": "dataset_upload_create",
@@ -860,6 +895,48 @@
                     "status"
                 ]
             },
+            "DatasetList": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "name": {
+                        "type": "string",
+                        "readOnly": true
+                    },
+                    "status": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/StatusEnum"
+                            }
+                        ],
+                        "readOnly": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "schema": {
+                        "readOnly": true,
+                        "nullable": true
+                    },
+                    "parse_result": {
+                        "readOnly": true,
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "created_at",
+                    "id",
+                    "name",
+                    "parse_result",
+                    "schema",
+                    "status"
+                ]
+            },
             "JWT": {
                 "type": "object",
                 "description": "Serializer for JWT authentication.",
@@ -1046,6 +1123,16 @@
                 "required": [
                     "detail"
                 ]
+            },
+            "StatusEnum": {
+                "enum": [
+                    "uploaded",
+                    "processing",
+                    "parsed",
+                    "failed"
+                ],
+                "type": "string",
+                "description": "* `uploaded` - アップロード済み\n* `processing` - 処理中\n* `parsed` - 解析完了\n* `failed` - 失敗"
             },
             "TokenRefresh": {
                 "type": "object",
