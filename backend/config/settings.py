@@ -87,6 +87,7 @@ INSTALLED_APPS = [
     "apps.api.apps.ApiConfig",
     "apps.climate_data.apps.ClimateDataConfig",
     "apps.dataset.apps.DatasetConfig",
+    "apps.core.apps.CoreConfig",
 ]
 
 # ================================
