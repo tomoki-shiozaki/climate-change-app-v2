@@ -65,6 +65,12 @@ export function DatasetUploadForm() {
     onSuccess: (data) => {
       setMessage(`アップロード成功: ID ${data.id}, 名前 ${data.name}`);
 
+      // フォームリセット
+      setFile(null);
+      setTimeColumn("");
+      setValueColumn("");
+      setSeriesColumn("");
+
       // ⭐ CSV一覧を即更新
       queryClient.invalidateQueries({ queryKey: ["datasets"] });
     },
