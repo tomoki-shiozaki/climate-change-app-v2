@@ -1,13 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { fetchDatasetList } from "@/features/dataset/api/fetchDatasetList";
-import type {
-  DatasetList,
-  DatasetStatus,
-} from "@/features/dataset/types/dataset";
+import type { DatasetStatus } from "@/features/dataset/types/dataset";
 
 const STATUS_LABEL: Record<DatasetStatus, string> = {
   uploaded: "アップロード済み",
@@ -17,62 +13,57 @@ const STATUS_LABEL: Record<DatasetStatus, string> = {
 };
 
 export function DatasetList() {
-  const [offset, setOffset] = useState(0);
-  const [allDatasets, setAllDatasets] = useState<DatasetList["results"]>([]);
-  const [hasNext, setHasNext] = useState<boolean>(true);
   const limit = 10;
 
-  const { data, isLoading, isFetching, error } = useQuery({
-    queryKey: ["datasets", offset],
-    queryFn: () => fetchDatasetList({ limit, offset }),
-    placeholderData: keepPreviousData,
+  const {
+    data,
+    isLoading,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
+    queryKey: ["datasets"],
+
+    initialPageParam: 0,
+
+    queryFn: ({ pageParam }) => fetchDatasetList({ limit, offset: pageParam }),
+
+    getNextPageParam: (lastPage, allPages) => {
+      if (!lastPage.next) return undefined;
+      return allPages.length * limit;
+    },
+
+    // processing がある間だけポーリング
     refetchInterval: (query) =>
-      query.state.data?.results.some((ds) => ds.status === "processing")
+      query.state.data?.pages.some((page) =>
+        page.results.some((ds) => ds.status === "processing"),
+      )
         ? 3000
         : false,
   });
 
-  // データが取得されたらローカルステートに追加
-  useEffect(() => {
-    if (!data?.results) return;
-
-    queueMicrotask(() => {
-      setAllDatasets((prev) => {
-        // すでに表示済みの Dataset を除外して、新規分だけ追加（重複防止）
-        const newItems = data.results.filter(
-          (item) => !prev.some((p) => p.id === item.id),
-        );
-        return [...prev, ...newItems];
-      });
-      setHasNext(Boolean(data.next));
-    });
-  }, [data?.results, data?.next]);
-
-  const handleLoadMore = () => {
-    if (hasNext) setOffset((prev) => prev + limit);
-  };
+  const datasets = data?.pages.flatMap((page) => page.results) ?? [];
 
   return (
     <Card className="max-w-2xl">
       <CardContent className="pt-6 space-y-4">
         <h2 className="text-xl font-semibold text-blue-600">CSV一覧</h2>
 
-        {isLoading && offset === 0 && (
-          <p className="text-sm text-gray-500">読み込み中…</p>
-        )}
+        {isLoading && <p className="text-sm text-gray-500">読み込み中…</p>}
 
         {error && (
           <p className="text-sm text-red-500">{(error as Error).message}</p>
         )}
 
-        {!isLoading && allDatasets.length === 0 && (
+        {!isLoading && datasets.length === 0 && (
           <p className="text-sm text-gray-500">
             まだCSVがアップロードされていません。
           </p>
         )}
 
         <ul className="space-y-2">
-          {allDatasets.map((ds) => (
+          {datasets.map((ds) => (
             <li
               key={ds.id}
               className="border rounded-lg p-3 flex items-center justify-between"
@@ -98,14 +89,13 @@ export function DatasetList() {
           ))}
         </ul>
 
-        {/* 「もっと見る」ボタンは next がある場合のみ表示 */}
-        {hasNext && (
+        {hasNextPage && (
           <button
             className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
-            onClick={handleLoadMore}
-            disabled={isFetching}
+            onClick={() => fetchNextPage()}
+            disabled={isFetchingNextPage}
           >
-            {isFetching ? "読み込み中…" : "もっと見る"}
+            {isFetchingNextPage ? "読み込み中…" : "もっと見る"}
           </button>
         )}
       </CardContent>
