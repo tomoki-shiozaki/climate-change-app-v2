@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { fetchDatasetList } from "@/features/dataset/api/fetchDatasetList";
 import type { DatasetStatus } from "@/features/dataset/types/dataset";
+import Link from "next/link";
 
 const STATUS_LABEL: Record<DatasetStatus, string> = {
   uploaded: "アップロード済み",
@@ -63,30 +64,46 @@ export function DatasetList() {
         )}
 
         <ul className="space-y-2">
-          {datasets.map((ds) => (
-            <li
-              key={ds.id}
-              className="border rounded-lg p-3 flex items-center justify-between"
-            >
-              <div>
-                <p className="font-medium">{ds.name}</p>
-                <p className="text-xs text-gray-500">
-                  {new Date(ds.created_at).toLocaleString()} {ds.id}
-                </p>
-              </div>
+          {datasets.map((ds) => {
+            const clickable = ds.status === "parsed";
 
-              <span
-                className={`text-sm px-2 py-1 rounded
-                  ${ds.status === "parsed" && "bg-green-100 text-green-700"}
-                  ${ds.status === "processing" && "bg-yellow-100 text-yellow-700"}
-                  ${ds.status === "uploaded" && "bg-gray-100 text-gray-700"}
-                  ${ds.status === "failed" && "bg-red-100 text-red-700"}
+            return (
+              <li
+                key={ds.id}
+                className={`border rounded-lg p-3 flex items-center justify-between transition
+                  ${clickable ? "hover:bg-gray-50" : "opacity-60"}
                 `}
               >
-                {STATUS_LABEL[ds.status]}
-              </span>
-            </li>
-          ))}
+                <div>
+                  {clickable ? (
+                    <Link
+                      href={`/datasets/${ds.id}`}
+                      className="font-medium text-blue-600 hover:underline"
+                    >
+                      {ds.name}
+                    </Link>
+                  ) : (
+                    <p className="font-medium">{ds.name}</p>
+                  )}
+
+                  <p className="text-xs text-gray-500">
+                    {new Date(ds.created_at).toLocaleString()} {ds.id}
+                  </p>
+                </div>
+
+                <span
+                  className={`text-sm px-2 py-1 rounded
+                    ${ds.status === "parsed" && "bg-green-100 text-green-700"}
+                    ${ds.status === "processing" && "bg-yellow-100 text-yellow-700"}
+                    ${ds.status === "uploaded" && "bg-gray-100 text-gray-700"}
+                    ${ds.status === "failed" && "bg-red-100 text-red-700"}
+                  `}
+                >
+                  {STATUS_LABEL[ds.status]}
+                </span>
+              </li>
+            );
+          })}
         </ul>
 
         {hasNextPage && (
