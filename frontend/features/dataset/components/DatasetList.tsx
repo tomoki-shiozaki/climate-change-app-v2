@@ -3,6 +3,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Loading } from "@/components/common";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { fetchDatasetList } from "@/features/dataset/api/fetchDatasetList";
@@ -103,7 +104,7 @@ export function DatasetList() {
                   )}
 
                   <p className="text-xs text-gray-500">
-                    {new Date(ds.created_at).toLocaleString()} {ds.id}
+                    {new Date(ds.created_at).toLocaleString()}
                   </p>
                 </div>
 
@@ -116,13 +117,13 @@ export function DatasetList() {
         </ul>
 
         {hasNextPage && (
-          <button
-            className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+          <Button
+            className="mt-2"
             onClick={() => fetchNextPage()}
             disabled={isFetchingNextPage}
           >
             {isFetchingNextPage ? "読み込み中…" : "もっと見る"}
-          </button>
+          </Button>
         )}
       </CardContent>
     </Card>
