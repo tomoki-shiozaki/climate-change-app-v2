@@ -2,6 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Loading } from "@/components/common";
+import { Badge } from "@/components/ui/badge";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { fetchDatasetList } from "@/features/dataset/api/fetchDatasetList";
@@ -13,6 +14,16 @@ const STATUS_LABEL: Record<DatasetStatus, string> = {
   processing: "処理中",
   parsed: "解析完了",
   failed: "失敗",
+};
+
+const STATUS_VARIANT: Record<
+  DatasetStatus,
+  "default" | "secondary" | "destructive"
+> = {
+  parsed: "default",
+  processing: "secondary",
+  uploaded: "secondary",
+  failed: "destructive",
 };
 
 export function DatasetList() {
@@ -96,16 +107,9 @@ export function DatasetList() {
                   </p>
                 </div>
 
-                <span
-                  className={`text-sm px-2 py-1 rounded
-                    ${ds.status === "parsed" && "bg-green-100 text-green-700"}
-                    ${ds.status === "processing" && "bg-yellow-100 text-yellow-700"}
-                    ${ds.status === "uploaded" && "bg-gray-100 text-gray-700"}
-                    ${ds.status === "failed" && "bg-red-100 text-red-700"}
-                  `}
-                >
+                <Badge variant={STATUS_VARIANT[ds.status]}>
                   {STATUS_LABEL[ds.status]}
-                </span>
+                </Badge>
               </li>
             );
           })}
