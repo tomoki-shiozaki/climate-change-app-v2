@@ -1,6 +1,7 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
+import { Loading } from "@/components/common";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { fetchDatasetList } from "@/features/dataset/api/fetchDatasetList";
 import type { DatasetStatus } from "@/features/dataset/types/dataset";
@@ -51,7 +52,7 @@ export function DatasetList() {
       <CardContent className="pt-6 space-y-4">
         <h2 className="text-xl font-semibold text-blue-600">CSV一覧</h2>
 
-        {isLoading && <p className="text-sm text-gray-500">読み込み中…</p>}
+        {isLoading && <Loading message="CSV一覧を読み込み中..." />}
 
         {error && (
           <p className="text-sm text-red-500">{(error as Error).message}</p>
