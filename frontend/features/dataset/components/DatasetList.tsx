@@ -2,6 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Loading } from "@/components/common";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { fetchDatasetList } from "@/features/dataset/api/fetchDatasetList";
 import type { DatasetStatus } from "@/features/dataset/types/dataset";
@@ -55,7 +56,10 @@ export function DatasetList() {
         {isLoading && <Loading message="CSV一覧を読み込み中..." />}
 
         {error && (
-          <p className="text-sm text-red-500">{(error as Error).message}</p>
+          <Alert variant="destructive">
+            <AlertTitle>CSV一覧の取得に失敗しました</AlertTitle>
+            <AlertDescription>{error.message}</AlertDescription>
+          </Alert>
         )}
 
         {!isLoading && datasets.length === 0 && (
