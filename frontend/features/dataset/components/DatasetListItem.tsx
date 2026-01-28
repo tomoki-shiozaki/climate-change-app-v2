@@ -21,7 +21,7 @@ export function DatasetListItem({ dataset }: Props) {
       <div>
         {clickable ? (
           <Link
-            href={`/datasets/${dataset.id}`}
+            href={`/dataset/${dataset.id}`}
             className="font-medium text-blue-600 hover:underline"
           >
             {dataset.name}
