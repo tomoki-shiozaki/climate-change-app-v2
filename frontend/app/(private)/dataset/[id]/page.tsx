@@ -1,15 +1,8 @@
 type Props = {
-  params: Promise<{
-    id: string;
-  }>;
+  params: { id: string }; // URLパラメータがここに入る
 };
 
-export default async function DatasetDetailPage({ params }: Props) {
-  const { id } = await params;
-
-  return (
-    <div>
-      <h1>Dataset ID: {id}</h1>
-    </div>
-  );
+export default function Page({ params }: Props) {
+  const { id } = params;
+  return <div>Dataset ID: {id}</div>;
 }
