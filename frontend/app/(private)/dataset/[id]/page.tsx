@@ -1,15 +1,8 @@
 "use client";
 
-import { apiClient } from "@/features/auth/api/apiClient";
-import { DatasetDetail } from "@/features/dataset/types/dataset";
+import { fetchDatasetDetail } from "@/features/dataset/api/fetchDatasetDetail";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-
-// fetcher を外に出す（再利用できる）
-const fetchDatasetDetail = async (id: string): Promise<DatasetDetail> => {
-  const res = await apiClient.get(`/dataset/${id}/`);
-  return res.data;
-};
 
 export default function DatasetDetailPage() {
   const params = useParams();
