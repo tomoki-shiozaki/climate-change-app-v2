@@ -5,8 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 
 export function DatasetDetail() {
-  const params = useParams();
-  const id = params.id as string;
+  const { id } = useParams<{ id: string }>();
 
   const {
     data: dataset,
