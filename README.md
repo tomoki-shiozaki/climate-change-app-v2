@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 Django REST Framework と Next.js を使った、気候変動データの可視化アプリです。  
-[v1（React 版）](https://github.com/tomoki-shiozaki/climate-change-app)のフロントエンドの開発環境を React から Next.js へ移行したため、新たなプロジェクトとして本バージョンの v2 を作成しました。
+[v1（React 版）](https://github.com/tomoki-shiozaki/climate-change-app) からフロントエンドを Next.js に移行したため、新規プロジェクトとして v2 を作成しました。
 
 ---
 
@@ -15,13 +15,14 @@ Django REST Framework と Next.js を使った、気候変動データの可視�
 - Django REST Framework, Next.js（App Router）, PostgreSQL
 - Vercel / Render（デプロイ環境）
 - GitHub Actions（定期バッチ処理）
+- Terraform（バックエンドインフラ管理）
 
 ---
 
 ## 主な変更点（v1 → v2）
 
-- フロントエンドを Next.js に置き換え、Vercel でデプロイ
-- バックエンドのインフラに Terraform を使用
+- フロントエンドを React から **Next.js に置き換え**、Vercel でデプロイ
+- バックエンドインフラを **Terraform で管理**
 
 ---
 
@@ -36,19 +37,23 @@ Django REST Framework と Next.js を使った、気候変動データの可視�
 
 ## デプロイ URL
 
-1. **推奨環境**  
-   [Vercel フロント / Google Cloud バック](https://climate-change-app-v2.vercel.app/)  
-   ※バックエンドはスリープ復帰に時間がかかる場合があります（目安：最大約 20~25 秒）。
+### 1. 推奨環境
 
-2. **代替環境（Render のみ）**  
-   [Render フロント＆バック](https://climate-change-app-v2.onrender.com/)  
-   ※Vercel 環境が利用できない場合の代替です。起動に時間がかかる場合があります。（目安：フロントは最大 40 秒、バックエンドは最大約 50~60 秒）。
+[Vercel フロント / Google Cloud バック](https://climate-change-app-v2.vercel.app/)
+
+- バックエンドはスリープ復帰時に最大約 20〜25 秒かかる場合があります
+
+### 2. 代替環境（Render フロント＆バック）
+
+[Render 環境](https://climate-change-app-v2.onrender.com/)
+
+- フロント最大 40 秒、バックエンド最大 50〜60 秒かかる場合があります
 
 ---
 
 ## デモ用アカウント（ポートフォリオ閲覧用）
 
-※ 本アプリはログインが前提のため、動作確認には以下のアカウントをご利用ください。
+※ 本アプリはログインが前提です。動作確認には以下アカウントをご利用ください。
 
 | ユーザー名  | メールアドレス   | パスワード       |
 | ----------- | ---------------- | ---------------- |
@@ -64,7 +69,7 @@ Django REST Framework と Next.js を使った、気候変動データの可視�
 
 ## CO₂ 排出量マップ（年度スライダー）
 
-年度スライダーを動かすことで各国の色分けが変化します。（自動再生機能あり）
+年度スライダーを動かすと各国の色分けが変化します。（自動再生機能あり）
 
 ![CO₂ Map Demo](./docs/images/co2-map-demo.gif)
 
@@ -72,6 +77,4 @@ Django REST Framework と Next.js を使った、気候変動データの可視�
 
 ## ドキュメント
 
-詳細なシステム構成や設計案などは  
-[docs/README.md](docs/README.md) をご覧ください。  
-※本ドキュメントには開発構想や設計案も含むため、実装と完全には一致しない場合があります。
+システム構成やER図などは [docs/README.md](docs/README.md) を参照してください。
