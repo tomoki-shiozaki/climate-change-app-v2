@@ -1,4 +1,6 @@
-# 気候変動データ可視化アプリ開発プロジェクト
+# 気候変動データ可視化アプリ開発プロジェクト（v2）
+
+※ 本ドキュメントは v2（Next.js + Terraform 版）の設計概要です。
 
 ## 1. プロジェクト概要
 
@@ -6,19 +8,20 @@
 - **前提：**
   - 気候変動関連のオープンデータ（気温、CO₂ 排出量など）は [Our World in Data (OWID) ](https://ourworldindata.org/)の API や CSV として整備されている。
   - GitHub Actions を用いて OWID のデータを定期的に取得し、Neon PostgreSQL に蓄積する構成を採用。
-  - バックエンドは Cloud Run（Django REST Framework + PostgreSQL）、フロントエンドは Render（React）で運用。
+  - バックエンドは Django REST Framework + PostgreSQL、フロントエンドは Next.js。
+  - バックエンドインフラは Terraform で管理。
 - **データ例：**
   - 世界平均気温の変化（年次）
   - 国別・年別 CO₂ 排出量
 - **開発目的：**
-  - フロントエンド（React）とバックエンド（DRF）をクラウド環境で運用するフルスタック開発の実践。
-  - CI/CD、インフラ（Google Cloud / Cloud Run、Render）、バッチ処理（GitHub Actions）など、実務レベルの構成を経験する。
+  - フロントエンド（Next.js）とバックエンド（DRF）をクラウド環境で運用するフルスタック開発の実践。
+  - CI/CD、インフラ（Google Cloud / Cloud Run、Vercel）、バッチ処理（GitHub Actions）など、実務レベルの構成を経験する。
   - バッチ処理や API 連携を通して、データ処理・API 設計の経験を積む
   - ユーザーが直感的に気候データを理解できるインタラクティブな可視化体験を提供する。
 - **現在の実装状況（MVP 実装内容）**
   - GitHub Actions による定期バッチで OWID データを取得し Neon DB に保存
   - DRF による API（気温・CO₂ 排出データ）を Cloud Run 上で提供
-  - React（Render）で気温変化のグラフ表示・CO₂ 排出量マップなどの UI を提供
+  - Next.js（Vercel）で気温変化のグラフ表示・CO₂ 排出量マップなどの UI を提供
   - エラーハンドリング・ローディング UI、簡易的な説明文・出典表示を実装
 
 ---
@@ -32,11 +35,12 @@
 
 ### 説明
 
-- **フロントエンド**：React + Render
-- **バックエンド**：Django REST Framework + Cloud Run
+- **フロントエンド**：Next.js + Vercel / Render
+- **バックエンド**：Django REST Framework + Google Cloud / Render
 - **データベース**：Neon PostgreSQL
+- **インフラ管理**：Terraform
 - **定期バッチ**：GitHub Actions が OWID API からデータを取得し DB に保存
-- **CI/CD**：Cloud Build → Artifact Registry → Cloud Run、フロントは Render に自動デプロイ
+- **CI/CD**：GitHub Actions + Terraform、フロントは Vercel、バックエンドは Google Cloud / Render にデプロイ
 - **ログ**：Cloud Logging を利用
 
 ---
@@ -86,7 +90,7 @@
 
 #### 3. データ可視化（フロントエンド）
 
-- React + Recharts による折れ線グラフ表示
+- Next.js + Recharts による折れ線グラフ表示
 - 気温グラフ：セレクトボックスで地域を切り替え
 - CO₂ 排出量マップ：年スライダーで排出量推移を可視化
 - 年次推移をインタラクティブに表示
@@ -99,17 +103,17 @@
 
 ## 6. 使用技術スタック
 
-| 分類           | 技術                                                     |
-| -------------- | -------------------------------------------------------- |
-| フロントエンド | React, TypeScript, Recharts, React Leaflet, Tailwind CSS |
-| バックエンド   | Django, Django REST Framework                            |
-| データベース   | PostgreSQL                                               |
-| インフラ       | Docker, docker-compose                                   |
-| デプロイ       | Google Cloud / Render                                    |
-| テスト         | pytest, Vitest                                           |
-| バージョン管理 | Git, GitHub                                              |
+| 分類           | 技術                                                       |
+| -------------- | ---------------------------------------------------------- |
+| フロントエンド | Next.js, TypeScript, Recharts, React Leaflet, Tailwind CSS |
+| バックエンド   | Django, Django REST Framework                              |
+| データベース   | PostgreSQL                                                 |
+| インフラ       | Docker, docker-compose                                     |
+| デプロイ       | Google Cloud / Vercel                                      |
+| テスト         | pytest, Vitest                                             |
+| バージョン管理 | Git, GitHub                                                |
 
 ## 補足
 
-本プロジェクトは OWID データを用いた固定データ型の可視化アプリとして完結しています。
-現在は[別プロジェクト](https://github.com/tomoki-shiozaki/climate-change-app-v2)にて、ユーザー CSV アップロード型の汎用可視化基盤を開発中です。
+現在は別プロジェクト VizShare にて、ユーザー CSV アップロード型の汎用データ可視化基盤を開発しています。
+本リポジトリ（v2）は気候データ専用アプリとして完結しています。
