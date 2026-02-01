@@ -35,12 +35,12 @@
 
 ### 説明
 
-- **フロントエンド**：Next.js + Vercel / Render
-- **バックエンド**：Django REST Framework + Google Cloud / Render
+- **フロントエンド**：Next.js + Vercel
+- **バックエンド**：Django REST Framework + Google Cloud (Cloud Run)
 - **データベース**：Neon PostgreSQL
 - **インフラ管理**：Terraform
 - **定期バッチ**：GitHub Actions が OWID API からデータを取得し DB に保存
-- **CI/CD**：GitHub Actions + Terraform、フロントは Vercel、バックエンドは Google Cloud / Render にデプロイ
+- **CI/CD**：GitHub Actions + Terraform、フロントは Vercel、バックエンドは Google Cloud (Cloud Run) にデプロイ
 - **ログ**：Cloud Logging を利用
 
 ---
@@ -85,14 +85,14 @@
 - Django モデルを定義し、PostgreSQL に保存
 - 指標・地域・年をキーとする構造化データ設計
 - Django REST Framework で API を構築
-  - `/api/temperature/`
-  - `/api/co2/`
+  - `/api/v1/climate/temperature/`
+  - `/api/v1/climate/co2/`
 
 #### 3. データ可視化（フロントエンド）
 
 - Next.js + Recharts による折れ線グラフ表示
 - 気温グラフ：セレクトボックスで地域を切り替え
-- CO₂ 排出量マップ：年スライダーで排出量推移を可視化
+- CO₂ 排出量マップ：React Leafletを利用。年スライダーで排出量推移を可視化
 - 年次推移をインタラクティブに表示
 
 #### 4. 解説セクション
@@ -103,15 +103,15 @@
 
 ## 6. 使用技術スタック
 
-| 分類           | 技術                                                       |
-| -------------- | ---------------------------------------------------------- |
-| フロントエンド | Next.js, TypeScript, Recharts, React Leaflet, Tailwind CSS |
-| バックエンド   | Django, Django REST Framework                              |
-| データベース   | PostgreSQL                                                 |
-| インフラ       | Docker, docker-compose                                     |
-| デプロイ       | Google Cloud / Vercel                                      |
-| テスト         | pytest, Vitest                                             |
-| バージョン管理 | Git, GitHub                                                |
+| 分類           | 技術                                                                  |
+| -------------- | --------------------------------------------------------------------- |
+| フロントエンド | Next.js, TypeScript, Recharts, React Leaflet, Tailwind CSS, shadcn/ui |
+| バックエンド   | Django, Django REST Framework                                         |
+| データベース   | Neon PostgreSQL                                                       |
+| インフラ       | Terraform, Docker                                                     |
+| デプロイ       | Google Cloud / Vercel                                                 |
+| テスト         | pytest, Vitest                                                        |
+| バージョン管理 | Git, GitHub                                                           |
 
 ## 補足
 
